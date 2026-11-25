@@ -1,0 +1,60 @@
+{
+  "project": "deskly",
+  "note": "MADE-UP TEST DATA. No real people, clients or sessions.",
+  "sessions": [
+    {
+      "session_id": "S01",
+      "date": "2026-11-18",
+      "call_type": "fresh_start",
+      "sorted_before_call": true,
+      "path": "discovery_question",
+      "participant_role": "member",
+      "cohort": "peak-time bookers",
+      "is_proxy": false,
+      "moderator": "Test Moderator",
+      "note_taker": "Test Note-taker",
+      "screener_used": true,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S01.txt"
+    },
+    {
+      "session_id": "S02",
+      "date": "2026-11-20",
+      "call_type": "informed",
+      "sorted_before_call": true,
+      "path": "discovery_question",
+      "participant_role": "approving-manager",
+      "cohort": "approving managers",
+      "is_proxy": false,
+      "moderator": "Test Moderator",
+      "note_taker": "Test Moderator",
+      "screener_used": true,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S02.txt"
+    },
+    {
+      "session_id": "S03",
+      "date": "2026-11-21",
+      "call_type": "ad_hoc",
+      "sorted_before_call": false,
+      "path": null,
+      "participant_role": "office-manager",
+      "cohort": "peak-time bookers",
+      "is_proxy": true,
+      "moderator": "Test Moderator",
+      "note_taker": null,
+      "screener_used": false,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S03.txt"
+    }
+  ],
+  "artefacts": {
+    "heuristic_evaluation": null,
+    "accessibility_check": null,
+    "competitive_scan": null,
+    "secondary_research": null
+  }
+}

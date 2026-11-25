@@ -1,0 +1,11 @@
+{"product":"deskly","workflow":["managing-capacity"],"content_type":"transcript","qualifier":"s03","version":1,
+ "personas":["office-manager"],"lifecycle":["manage","book"],"research_type":"discovery","date":"2026-11-21",
+ "description":"Ad hoc listening call with the office manager on member complaints, midnight booking, no-shows and informal desk holds.",
+ "context":"Deskly, managing capacity, Frame stage: ad hoc listening call transcript S03 with a proxy for members (made-up test data).",
+ "overview":"'Speaker 1' = office manager (S03), speaking partly on behalf of members (proxy). 'Moderator' = researcher. About 2 minutes, unplanned.",
+ "source_file":"S03.txt","participants":1,"confidentiality":"internal",
+ "sections":[{"line":1,"title":"Office manager introduction","summary":"S03 office manager introduces their role."},
+  {"line":3,"title":"Office manager view of the mobile app","summary":"S03 office manager's claim about members and the mobile app."},
+  {"line":4,"title":"Tuesday complaints and no-shows","summary":"S03 office manager on midnight booking, no-shows and Slack holds."},
+  {"line":7,"title":"What good would look like for the office manager","summary":"S03 office manager on releasing no-shows."},
+  {"line":9,"title":"Close and commitments","summary":"Moderator commits to a recap only."}]}

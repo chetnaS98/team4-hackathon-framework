@@ -1,2 +1,4 @@
 # Packaged copy of the original skill (source now lives in .claude/skills/)
 *.skill
+__pycache__/
+*.pyc
