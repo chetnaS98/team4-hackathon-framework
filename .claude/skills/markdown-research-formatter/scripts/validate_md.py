@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Validate a UXR research Markdown file: front matter schema, filename, and body basics.
+"""Validate a research Markdown file: front matter schema, filename, and body basics.
 
-Usage: python validate_md.py <file.md> [<file2.md> ...] [--source original.txt]
+Usage: python validate_md.py <file.md> [<file2.md> ...] [--source original.txt] [--profile research-profile.json]
 --source (transcripts): verifies every source line survives unchanged and in order.
+--profile: project profile with allowed products/lifecycle stages. If omitted, the nearest
+           research-profile.json above each .md is used; with none, only formats are checked (warning).
 Exit code 0 = no errors (warnings allowed), 1 = at least one error.
 Requires PyYAML.
 """
@@ -12,8 +14,8 @@ from pathlib import Path
 
 import yaml
 
-PRODUCTS = {"rail", "truck", "multimodal"}
-LIFECYCLE = {"plan", "tender", "execute", "track", "settle", "analyze", "multi"}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from research_profile import load_profile  # noqa: E402
 RESEARCH_TYPES = {"discovery", "design-feedback", "both"}
 CONTENT_TYPES = {"transcript", "synthesis", "workflow-map", "spreadsheet",
                  "guide", "deck", "notes", "persona"}
@@ -109,10 +111,19 @@ def check_images(p, body, source_lines, errors, warnings):
                 warnings.append(f"assets/{f.name} is not referenced by {p.name}.")
 
 
-def validate(path, source=None):
+def validate(path, source=None, profile_path=None):
     errors, warnings = [], []
     p = Path(path)
     text = p.read_bytes().decode("utf-8")
+    try:
+        prof, prof_path = load_profile(profile_path, start=p.parent)
+    except (ValueError, OSError) as e:
+        return [f"Project profile invalid: {e}"], warnings
+    if prof is None:
+        warnings.append("No research-profile.json found above this file (and no --profile); "
+                        "product/lifecycle values were only format-checked.")
+    products = set(prof["products"]) if prof else None
+    lifecycle = (set(prof["lifecycle"]) | {"multi"}) if prof and prof.get("lifecycle") else None
 
     raw, body, err = split_front_matter(text)
     if err:
@@ -131,7 +142,7 @@ def validate(path, source=None):
             errors.append(f"Missing required field: {k}")
     for k in fm:
         if k not in REQUIRED + OPTIONAL:
-            errors.append(f"Unknown field '{k}' (not in schema; see references/field-schema.md)")
+            errors.append(f"Unknown field '{k}' (not in schema; see the Front matter section of SKILL.md)")
 
     def enum(field, allowed):
         v = fm.get(field)
@@ -153,16 +164,26 @@ def validate(path, source=None):
             elif kebab and not KEBAB.match(item):
                 errors.append(f"{field} value '{item}' must be lowercase kebab-case")
 
-    enum("product", PRODUCTS)
+    if products is not None:
+        enum("product", products)
+    elif fm.get("product") is not None and not KEBAB.match(str(fm.get("product"))):
+        errors.append("product must be lowercase kebab-case")
     enum("research_type", RESEARCH_TYPES)
     enum("content_type", CONTENT_TYPES)
     if "status" in fm:
         enum("status", STATUS)
     if "confidentiality" in fm:
         enum("confidentiality", CONFIDENTIALITY)
-    list_of("lifecycle", LIFECYCLE)
+    list_of("lifecycle", lifecycle, kebab=lifecycle is None)
     list_of("personas", kebab=True)
     list_of("workflow", kebab=True)
+    if prof:
+        for field, key in (("personas", "personas"), ("workflow", "workflows")):
+            known = prof.get(key)
+            vals = fm.get(field) if isinstance(fm.get(field), list) else []
+            new = [v for v in vals if known is not None and v not in known]
+            if new:
+                warnings.append(f"{field} value(s) {new} not in profile {key}; confirm and add to {prof_path.name}.")
     if "tags" in fm:
         list_of("tags", kebab=True)
         if isinstance(fm["tags"], list) and len(fm["tags"]) > 6:
@@ -295,12 +316,17 @@ def main(argv):
         k = args.index("--source")
         source = args[k + 1] if k + 1 < len(args) else None
         args = args[:k] + args[k + 2:]
+    profile_path = None
+    if "--profile" in args:
+        k = args.index("--profile")
+        profile_path = args[k + 1] if k + 1 < len(args) else None
+        args = args[:k] + args[k + 2:]
     if not args:
         print(__doc__)
         return 2
     failed = False
     for f in args:
-        errs, warns = validate(f, source)
+        errs, warns = validate(f, source, profile_path)
         status = "FAIL" if errs else "OK"
         print(f"[{status}] {f}")
         for e in errs:

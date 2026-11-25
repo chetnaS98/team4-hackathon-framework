@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
-"""Build a UXR .md (any content_type) from the ORIGINAL text plus a small plan, without altering the source.
+"""Build a research .md (any content_type) from the ORIGINAL text plus a small plan, without altering the source.
 
-Usage: python build_verbatim.py plan.json source.txt <out_dir>
+Usage: python build_verbatim.py plan.json source.txt <out_dir> [--profile research-profile.json]
+The plan's product/lifecycle are checked against the project profile (given, or the nearest
+research-profile.json above <out_dir>) before anything is written.
 Source lines are copied byte-for-byte; only headings/summaries and figure blocks are inserted between lines.
 Exits 1 if the source cannot be reproduced exactly from the output.
 
 Optional plan key "figures": [{"id":"fig01","image":"<path from extract_images.py>","alt":"one line",
-  "title":"Slide 3: Dock flow","after_line":42,"transcription":"every visible element","level":3}]
+  "title":"Slide 3: Booking flow","after_line":42,"transcription":"every visible element","level":3}]
 Each image is copied to <out_dir>/assets/<md-stem>_<id>.<ext> and embedded right after source line
 `after_line` (0 = before the source text), followed by its transcription.
 """
@@ -30,6 +32,11 @@ def yv(v):
 
 
 def main(argv):
+    profile_path = None
+    if "--profile" in argv:
+        k = argv.index("--profile")
+        profile_path = argv[k + 1] if k + 1 < len(argv) else None
+        argv = argv[:k] + argv[k + 2:]
     if len(argv) != 4:
         print(__doc__)
         return 2
@@ -39,6 +46,25 @@ def main(argv):
     lines = src.splitlines(keepends=True)
     out_dir = Path(argv[3])
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from research_profile import load_profile
+    try:
+        prof, prof_path = load_profile(profile_path, start=out_dir)
+    except (ValueError, OSError) as e:
+        print(f"ERROR: project profile invalid: {e}")
+        return 1
+    if prof is None:
+        print("note: no research-profile.json found; product/lifecycle not checked against a project.")
+    else:
+        if plan["product"] not in prof["products"]:
+            print(f"ERROR: product '{plan['product']}' not in {prof_path}: {sorted(prof['products'])}")
+            return 1
+        allowed = set(prof.get("lifecycle") or {}) | {"multi"}
+        bad = [x for x in plan.get("lifecycle", []) if prof.get("lifecycle") and x not in allowed]
+        if bad:
+            print(f"ERROR: lifecycle {bad} not in {prof_path}: {sorted(allowed)}")
+            return 1
 
     wf = plan["workflow"]
     q = plan.get("qualifier")
@@ -149,7 +175,9 @@ def main(argv):
         return 1
 
     out = out_dir / fname
-    out.write_text("\n".join(head) + "".join(body) + tail, encoding="utf-8", newline="")
+    # open(newline="") keeps the source's line endings; Path.write_text(newline=) needs Python 3.10+
+    with open(out, "w", encoding="utf-8", newline="") as fh:
+        fh.write("\n".join(head) + "".join(body) + tail)
     pat = "#" if ct == "transcript" else "# "
     hashes = sum(1 for l in lines if l.startswith(pat))
     if hashes:
