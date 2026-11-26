@@ -20,7 +20,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import FILE_RE, STAGES, STATUSES, front, load_json  # noqa: E402
+from _common import FILE_RE, STAGES, STATUSES, front, in_code_folder, load_json  # noqa: E402
 
 REQUIRED = ["title", "description", "type", "stage", "status", "version", "last_checked", "owner"]
 DERIVES = re.compile(r"^[a-z0-9][a-z0-9_-]*[-_]v\d+$")  # artefact or source name ending -vN or _vN, no status suffix
@@ -98,7 +98,8 @@ def collect(paths):
         p = Path(p)
         if p.is_dir():
             out += sorted(x for x in list(p.rglob("*.md")) + list(p.rglob("*.html"))
-                          if "templates" not in x.parts and "superseded" not in x.parts and "sources" not in x.parts)
+                          if "templates" not in x.parts and "superseded" not in x.parts and "sources" not in x.parts
+                          and not in_code_folder(x))
         elif p.is_file():
             out.append(p)
         else:

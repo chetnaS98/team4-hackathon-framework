@@ -32,6 +32,7 @@ Status per item: `done` (with the source), `not needed` (with a reason), or the 
 
 - [ ] Whether the client has a component library and Storybook (or similar); its URL and version.
 - [ ] A map from the design library's components to the client's components; gaps become new components.
+- [ ] What the client builds in (React and its version, Angular, other). Ship's optional React starter (S3b) runs only for React; for anything else, the HTML deliverable and tickets are the handoff.
 - [ ] How tokens reach code (a token pipeline, CSS variables, a theme file) and whether `tokens.json` can feed it.
 - [ ] Whether Figma Code Connect or a similar link between Figma and code is in use.
 

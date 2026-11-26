@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import FILE_RE, front, table_rows  # noqa: E402
+from _common import FILE_RE, front, in_code_folder, table_rows  # noqa: E402
 
 COLS = ["Artefact", "Stage", "Type", "Version", "Status", "Home", "External link", "Pointer", "Signer", "Derives from"]
 
@@ -37,7 +37,7 @@ def main():
         head = "# Artefact registry"
     rows, seen = {}, set()
     for p in sorted(list(eng.rglob("*.md")) + list(eng.rglob("*.html"))):
-        if "templates" in p.parts or "superseded" in p.parts or "sources" in p.parts or p.name.startswith(("00-", "05-")):
+        if "templates" in p.parts or "superseded" in p.parts or "sources" in p.parts or p.name.startswith(("00-", "05-")) or in_code_folder(p):
             continue
         fm, _, _ = front(p.read_text(encoding="utf-8"))
         if "type" not in fm:

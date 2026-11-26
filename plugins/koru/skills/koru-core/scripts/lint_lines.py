@@ -39,7 +39,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import front  # noqa: E402
+from _common import front, in_code_folder  # noqa: E402
 
 LEVELS = ("high", "medium", "low")
 CONF = re.compile(r"\[(high|medium|low)\]", re.I)
@@ -122,7 +122,7 @@ def collect(paths):
         if p.is_dir():
             out += sorted(x for x in p.rglob("*.md")
                           if not x.name.startswith(SKIP_PREFIXES) and x.name not in SKIP_NAMES
-                          and not (SKIP_DIRS & set(x.parts)))
+                          and not (SKIP_DIRS & set(x.parts)) and not in_code_folder(x))
         elif p.is_file():
             out.append(p)
         else:

@@ -1,0 +1,9 @@
+/* Layout and components. Colours only as var(--token) from tokens.css; never a raw colour. */
+* { box-sizing: border-box; }
+body { margin: 0; }
+.layout { display: grid; grid-template-columns: minmax(200px, 260px) 1fr; min-height: 100vh; }
+#state-switcher { padding: 16px; overflow: auto; }
+#state-switcher ul { padding-left: 16px; }
+main { padding: 24px; }
+.sample-note, .state-label { margin: 0 0 8px; }
+@media (max-width: 800px) { .layout { grid-template-columns: 1fr; } }
