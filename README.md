@@ -42,7 +42,7 @@ The numbers are the order the stages hand on. Every stage skill loads `koru-core
 
 ### Technical specifications
 
-| | |
+| Area | Spec |
 |---|---|
 | **Runs in** | Claude Code (CLI, desktop app or IDE), as a plugin installed from this repo's marketplace (`team4-koru`) |
 | **Scripts** | Python 3.9+, standard library only: nothing to install for the plugin |
