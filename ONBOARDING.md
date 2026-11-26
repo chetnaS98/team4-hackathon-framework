@@ -36,7 +36,7 @@ Other commands: `/koru:status` (where are we, changes nothing), `/koru:break` (l
 | Frame | Converts the material, drafts the brief, TRACES, contradictions, research pack | Validate the path, answer as the client, check each draft | Senior (brief), research owner (pack) |
 | Explore | Directions, 2 journeys, wireframes for Idea A and B, add-ons, Design v1 | Designer decides at 3 checkpoints, runs concept tests, pastes into Figma | Team lead (an organiser plays the client) |
 | Harden | States, roles, edge cases, accessibility, tokens, hardened screens, rulebook checks | Engineer answers feasibility; fix, note or send back at checkpoint 2 | Engineer, rulebook owner, design lead |
-| Ship | HTML deliverable with an Intro.js walkthrough, 3 to 5 tickets, handoff note | Design lead and engineer agree the stories; a new user tests the walkthrough; engineer reviews and lists open questions | Engineer |
+| Ship | HTML deliverable with an Intro.js walkthrough, an optional React starter, 3 to 5 tickets, handoff note | Design lead and engineer agree the stories; a new user tests the walkthrough; engineer reviews and lists open questions | Engineer |
 
 Reviewer agents give an independent read at four points: `evidence-auditor` (Frame 5 and 7), `feasibility-engineer` (Harden H3), `hardening-critic` (after H7), `handoff-reviewer` (Ship S6). They report; a person decides.
 
