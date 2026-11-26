@@ -1,0 +1,329 @@
+{
+  "schema": "frame-synthesis/1",
+  "project": "deskly",
+  "stage": "frame",
+  "artefact": "synthesis",
+  "version": 1,
+  "status": "draft",
+  "generated_at": "2026-11-25T17:45:17+05:30",
+  "generated_by": "framework/scripts/frame_build_synthesis.py",
+  "note": "Index of cleaned sessions for the classify step. No findings or interpretation here.",
+  "manifest": "00-raw/manifest.json",
+  "profile": "/Users/admin/koru/team4-hackathon-framework/examples/deskly/research-profile.json",
+  "categories": {
+    "traces": [
+      "T",
+      "R",
+      "A",
+      "C",
+      "E",
+      "S"
+    ],
+    "layers": [
+      "data",
+      "finding",
+      "insight"
+    ],
+    "cohorts": [
+      "approving managers",
+      "peak-time bookers"
+    ],
+    "roles": [
+      "approving-manager",
+      "member",
+      "office-manager"
+    ]
+  },
+  "artefacts": {
+    "heuristic_evaluation": null,
+    "accessibility_check": null,
+    "competitive_scan": null,
+    "secondary_research": null
+  },
+  "totals": {
+    "sessions": 3,
+    "by_role": {
+      "member": 1,
+      "approving-manager": 1,
+      "office-manager": 1
+    },
+    "by_cohort": {
+      "peak-time bookers": 2,
+      "approving managers": 1
+    },
+    "by_call_type": {
+      "fresh_start": 1,
+      "informed": 1,
+      "ad_hoc": 1
+    },
+    "proxies": 1
+  },
+  "warnings": [],
+  "sessions": [
+    {
+      "session_id": "S01",
+      "date": "2026-11-18",
+      "call_type": "fresh_start",
+      "sorted_before_call": true,
+      "path": "discovery_question",
+      "participant_role": "member",
+      "cohort": "peak-time bookers",
+      "is_proxy": false,
+      "moderator": "Test Moderator",
+      "note_taker": "Test Note-taker",
+      "screener_used": true,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S01.txt",
+      "clean_path": "01-clean/deskly_booking-desk_transcript-s01_v1.md",
+      "clean_title": "Deskly | Booking Desk | Transcript S01 | v1",
+      "personas": [
+        "member"
+      ],
+      "workflow": [
+        "booking-desk"
+      ],
+      "lifecycle": [
+        "book",
+        "arrive"
+      ],
+      "research_type": "discovery",
+      "locator_style": "timestamp",
+      "line_count": 79,
+      "speakers": {
+        "Moderator": 8,
+        "Speaker 2": 7
+      },
+      "overview": "'Speaker 2' = member, sales team (S01). 'Moderator' = researcher. About 4 minutes. Covers the Tuesday rule, booking workarounds, arriving to occupied desks, what good looks like and constraints.",
+      "sections": [
+        {
+          "title": "Member role and office days",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member describes their role and the Tuesday in-office rule.",
+          "start_line": 26,
+          "end_line": 32
+        },
+        {
+          "title": "Tuesday desks gone by Monday night",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member on peak-day availability since the Tuesday rule.",
+          "start_line": 33,
+          "end_line": 39
+        },
+        {
+          "title": "Holding desks through Slack",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member's workaround of asking the office manager to hold a desk.",
+          "start_line": 40,
+          "end_line": 46
+        },
+        {
+          "title": "Arriving to an occupied desk",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member on booked desks being taken and working from the kitchen.",
+          "start_line": 47,
+          "end_line": 53
+        },
+        {
+          "title": "What good would look like for the member",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member describes the outcome they want.",
+          "start_line": 54,
+          "end_line": 60
+        },
+        {
+          "title": "Constraints and what has been tried",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member on the paper sign-up sheet and the full floor.",
+          "start_line": 61,
+          "end_line": 67
+        },
+        {
+          "title": "Device used for booking",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S01 member uses the laptop; mobile app logs them out.",
+          "start_line": 68,
+          "end_line": 74
+        },
+        {
+          "title": "Close and commitments",
+          "level": 2,
+          "kind": "topic",
+          "summary": "Moderator commits to a recap and follow-up with S01.",
+          "start_line": 75,
+          "end_line": 79
+        }
+      ]
+    },
+    {
+      "session_id": "S02",
+      "date": "2026-11-20",
+      "call_type": "informed",
+      "sorted_before_call": true,
+      "path": "discovery_question",
+      "participant_role": "approving-manager",
+      "cohort": "approving managers",
+      "is_proxy": false,
+      "moderator": "Test Moderator",
+      "note_taker": "Test Moderator",
+      "screener_used": true,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S02.txt",
+      "clean_path": "01-clean/deskly_approving-booking_transcript-s02_v1.md",
+      "clean_title": "Deskly | Approving Booking | Transcript S02 | v1",
+      "personas": [
+        "approving-manager"
+      ],
+      "workflow": [
+        "approving-booking"
+      ],
+      "lifecycle": [
+        "approve"
+      ],
+      "research_type": "discovery",
+      "locator_style": "timestamp",
+      "line_count": 66,
+      "speakers": {
+        "Moderator": 6,
+        "Speaker 1": 6
+      },
+      "overview": "'Speaker 1' = approving manager (S02). 'Moderator' = researcher. About 3 minutes. Confirms an earlier trigger, then covers the approval flow, the two-day cap, past fixes and rejections.",
+      "sections": [
+        {
+          "title": "Confirming the Tuesday trigger",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S02 approving manager confirms and extends the earlier trigger.",
+          "start_line": 26,
+          "end_line": 32
+        },
+        {
+          "title": "Approving a booking against policy",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S02 approving manager leaves the approval screen to check the cap.",
+          "start_line": 33,
+          "end_line": 40
+        },
+        {
+          "title": "What is known and assumed about the cap",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S02 approving manager on the two-day cap and team days.",
+          "start_line": 41,
+          "end_line": 47
+        },
+        {
+          "title": "What has been tried for approvals",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S02 approving manager on the IT spreadsheet.",
+          "start_line": 48,
+          "end_line": 54
+        },
+        {
+          "title": "Who is involved in rejections",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S02 approving manager on complaints and Slack threads.",
+          "start_line": 55,
+          "end_line": 61
+        },
+        {
+          "title": "Close and commitments",
+          "level": 2,
+          "kind": "topic",
+          "summary": "Moderator commits to tagging and sharing back with S02.",
+          "start_line": 62,
+          "end_line": 66
+        }
+      ]
+    },
+    {
+      "session_id": "S03",
+      "date": "2026-11-21",
+      "call_type": "ad_hoc",
+      "sorted_before_call": false,
+      "path": null,
+      "participant_role": "office-manager",
+      "cohort": "peak-time bookers",
+      "is_proxy": true,
+      "moderator": "Test Moderator",
+      "note_taker": null,
+      "screener_used": false,
+      "discussion_guide": null,
+      "guide_reviewed_by": null,
+      "transcript_path": "00-raw/S03.txt",
+      "clean_path": "01-clean/deskly_managing-capacity_transcript-s03_v1.md",
+      "clean_title": "Deskly | Managing Capacity | Transcript S03 | v1",
+      "personas": [
+        "office-manager"
+      ],
+      "workflow": [
+        "managing-capacity"
+      ],
+      "lifecycle": [
+        "manage",
+        "book"
+      ],
+      "research_type": "discovery",
+      "locator_style": "timestamp",
+      "line_count": 58,
+      "speakers": {
+        "Speaker 1": 5,
+        "Moderator": 4
+      },
+      "overview": "'Speaker 1' = office manager (S03), speaking partly on behalf of members (proxy). 'Moderator' = researcher. About 2 minutes, unplanned.",
+      "sections": [
+        {
+          "title": "Office manager introduction",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S03 office manager introduces their role.",
+          "start_line": 26,
+          "end_line": 32
+        },
+        {
+          "title": "Office manager view of the mobile app",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S03 office manager's claim about members and the mobile app.",
+          "start_line": 33,
+          "end_line": 38
+        },
+        {
+          "title": "Tuesday complaints and no-shows",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S03 office manager on midnight booking, no-shows and Slack holds.",
+          "start_line": 39,
+          "end_line": 46
+        },
+        {
+          "title": "What good would look like for the office manager",
+          "level": 2,
+          "kind": "topic",
+          "summary": "S03 office manager on releasing no-shows.",
+          "start_line": 47,
+          "end_line": 53
+        },
+        {
+          "title": "Close and commitments",
+          "level": 2,
+          "kind": "topic",
+          "summary": "Moderator commits to a recap only.",
+          "start_line": 54,
+          "end_line": 58
+        }
+      ]
+    }
+  ]
+}

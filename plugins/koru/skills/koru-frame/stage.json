@@ -1,0 +1,70 @@
+{
+  "stage": "frame",
+  "title": "Frame",
+  "number": 1,
+  "skill": "koru-frame",
+  "core_version": 1,
+  "types": [
+    "insight",
+    "persona",
+    "workflow",
+    "jtbd",
+    "opportunity",
+    "competitive-scan",
+    "research-pack",
+    "brief"
+  ],
+  "required_roles": [
+    "Team lead",
+    "Context keeper",
+    "Researcher",
+    "Research owner",
+    "Senior",
+    "Developer",
+    "Second-person checker pool"
+  ],
+  "draft_folders": [
+    "stage-intake",
+    "stage-research",
+    "stage-define",
+    "stage-opportunity",
+    "stage-brief"
+  ],
+  "final_folders": [
+    "01-framed-brief",
+    "02-research"
+  ],
+  "source_folder": true,
+  "templates_dir": "assets/templates",
+  "step_tracker": "assets/stage/step-tracker.md",
+  "handoff": {
+    "must_be_able_to_do": "Write two direction cards without going back to the client, and see which facts are high and which are low confidence",
+    "does_not_include": "A full PRD, any solution direction, and any research not yet done"
+  },
+  "optional_steps": {
+    "8": {
+      "skip_reason": "Short route: no new research this round; step 7 client questions cover the gaps",
+      "run_when": "Discovery path with time for primary research"
+    },
+    "9": {
+      "skip_reason": "Short route: no new transcripts or secondary research this round",
+      "run_when": "Step 8 produced new interviews or desk research"
+    },
+    "10": {
+      "skip_reason": "Short route: all material arrived and was converted at step 1",
+      "run_when": "New material arrived after step 1"
+    },
+    "11": {
+      "skip_reason": "Short route: synthesis folded into step 12",
+      "run_when": "A large engagement with many sources"
+    },
+    "14b": {
+      "skip_reason": "No current platform exists (no mock, screenshots or live product)",
+      "run_when": "There is a current platform to review"
+    },
+    "20": {
+      "skip_reason": "The client did not ask for an HTML summary",
+      "run_when": "The client wants an HTML summary"
+    }
+  }
+}

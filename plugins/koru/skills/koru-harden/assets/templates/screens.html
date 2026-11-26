@@ -1,0 +1,53 @@
+<!--
+---
+title: "{{project}} | Harden | Screens | v1"
+description: "TODO: one sentence on what this hardened design shows."
+type: screens
+stage: harden
+status: draft
+version: 1
+last_checked: {{date}}
+owner: TODO
+derives_from: []
+---
+-->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hardened design: TODO flow name (v1)</title>
+<style>
+  /* Self-contained: no external scripts, stylesheets or images.
+     Paste tokens.css here, then use only var(--token) values and design system components. */
+  :root { --color-text: #1a1a1a; --color-surface: #ffffff; --space-2: 8px; --radius-1: 4px;
+    --viewport-smallest: 1024px; /* TODO: the smallest width in the scope's Target viewports */ }
+  body { font-family: system-ui, sans-serif; color: var(--color-text); background: var(--color-surface); margin: 0; }
+  .screen { margin: 24px; }
+  .state { border: 1px solid #ccc; border-radius: var(--radius-1); padding: 16px; margin: 12px 0; }
+  .label { font-size: 12px; opacity: .7; margin-bottom: 8px; }
+  /* Show each screen at the smallest target viewport from the scope (a fixed-width frame). */
+  .viewport { width: var(--viewport-smallest); max-width: 100%; overflow: auto; }
+</style>
+</head>
+<body>
+<section class="screen" id="step-1">
+  <h2>Step 1: TODO screen name from scope</h2>
+  <div class="label">Viewport: TODO smallest target viewport, width×height</div>
+  <div class="viewport">
+  <div class="state" data-state="empty"><div class="label">State: Empty</div><!-- screen content --></div>
+  <div class="state" data-state="loading"><div class="label">State: Loading</div></div>
+  <div class="state" data-state="error"><div class="label">State: Error</div></div>
+  <div class="state" data-state="success"><div class="label">State: Success</div></div>
+  </div>
+</section>
+<section class="fixes">
+  <h2>Fixes applied in this version</h2>
+  <ul><li>None</li></ul>
+</section>
+<section class="gaps">
+  <h2>Design system gaps</h2>
+  <ul><li>None</li></ul>
+</section>
+</body>
+</html>

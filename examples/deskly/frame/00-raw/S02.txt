@@ -1,0 +1,12 @@
+[00:00:03] Moderator: Last round we heard the Tuesday in-office rule drove most of the booking pressure. Is that still true for your team?
+[00:00:14] Speaker 1: Yes, still true. Tuesdays and now Wednesdays too since the new floor closed.
+[00:00:29] Moderator: You approve bookings for your team. Walk me through the last one you approved.
+[00:00:36] Speaker 1: I get the notification, open the approval screen, and then I have to go check the policy page in another tab, because the screen doesn't tell me if they've hit their two-days-a-week cap.
+[00:01:05] Speaker 1: So I'm flipping between Deskly and the intranet. For six people that's maybe ten minutes every Monday.
+[00:01:20] Moderator: What do you know for sure about the cap, and what are you guessing?
+[00:01:27] Speaker 1: I know the cap is two days. I'm guessing on whether team days count toward it, nobody's ever confirmed that for me.
+[00:01:50] Moderator: Has anything been tried to fix this?
+[00:01:55] Speaker 1: Someone in IT made a spreadsheet of who's booked what. It's out of date by Tuesday.
+[00:02:15] Moderator: Who else is involved when a booking gets rejected?
+[00:02:21] Speaker 1: The person complains to me, and sometimes to Priya. Then it's a Slack thread.
+[00:02:40] Moderator: Thanks. We'll tag what you said against what we heard last time and share it back.

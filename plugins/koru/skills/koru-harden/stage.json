@@ -1,0 +1,58 @@
+{
+  "stage": "harden",
+  "title": "Harden",
+  "number": 3,
+  "skill": "koru-harden",
+  "core_version": 1,
+  "types": [
+    "scope",
+    "states",
+    "roles",
+    "edge-cases",
+    "accessibility",
+    "feasibility",
+    "tokens",
+    "screens",
+    "rulebook-chapter",
+    "rulebook-check",
+    "checklist",
+    "ship-notes",
+    "hardened-design"
+  ],
+  "required_roles": [
+    "Designer",
+    "Design lead",
+    "Rulebook owner",
+    "Engineer",
+    "Second-person checker pool"
+  ],
+  "draft_folders": [
+    "part-1-intake",
+    "part-2-harden",
+    "part-3-build",
+    "part-4-rulebook",
+    "part-5-handoff"
+  ],
+  "final_folders": [
+    "03-rulebook",
+    "04-design-library",
+    "08-harden"
+  ],
+  "source_folder": true,
+  "templates_dir": "assets/templates",
+  "step_tracker": "assets/stage/step-tracker.md",
+  "size": {
+    "small": "One flow, 5 or fewer screens, 1 or 2 roles",
+    "large": "Several flows, more than 5 screens, or 3 or more roles"
+  },
+  "handoff": {
+    "must_be_able_to_do": "Write tickets and build the HTML deliverable without coming back to the design team: every screen has its states, roles, permissions, edge cases and AI states defined, every component and token is in the design library or listed as a gap, feasibility limits and API and data assumptions are written down, and every rulebook break is either fixed or listed as a Ship note",
+    "does_not_include": "Jira tickets, user stories, the engineer-facing HTML deliverable, production code or a pull request, and any user testing beyond what Explore did"
+  },
+  "optional_steps": {
+    "H13": {
+      "skip_reason": "No changes asked for on the hardened screens",
+      "run_when": "The designer asks for changes after H12"
+    }
+  }
+}

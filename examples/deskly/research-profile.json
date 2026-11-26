@@ -1,0 +1,20 @@
+{
+  "profile_version": 1,
+  "project": "deskly",
+  "products": {
+    "deskly": "Made-up test product: desk and room booking (web app, mobile app, admin console)"
+  },
+  "lifecycle": {
+    "plan": "Deciding where and when to work, team days",
+    "book": "Finding and reserving a desk or room",
+    "approve": "Managers approving or rejecting bookings against policy",
+    "arrive": "Check-in, wayfinding, finding the desk free",
+    "manage": "Admin: floor plans, policies, capacity",
+    "analyze": "Occupancy reports and dashboards"
+  },
+  "personas": ["member", "approving-manager", "office-manager"],
+  "workflows": ["booking-desk", "approving-booking", "checking-in", "managing-capacity"],
+  "glossary": {"Deskly": ["deskly", "Deskley", "desk-ly"]},
+  "search_keywords": ["Deskly", "desk booking"],
+  "default_confidentiality": "internal"
+}
