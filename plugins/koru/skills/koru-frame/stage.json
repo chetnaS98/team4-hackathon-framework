@@ -1,0 +1,44 @@
+{
+  "stage": "frame",
+  "title": "Frame",
+  "number": 1,
+  "skill": "koru-frame",
+  "core_version": 1,
+  "types": [
+    "insight",
+    "persona",
+    "workflow",
+    "jtbd",
+    "opportunity",
+    "competitive-scan",
+    "research-pack",
+    "brief"
+  ],
+  "required_roles": [
+    "Team lead",
+    "Context keeper",
+    "Researcher",
+    "Research owner",
+    "Senior",
+    "Developer",
+    "Second-person checker pool"
+  ],
+  "draft_folders": [
+    "stage-intake",
+    "stage-research",
+    "stage-define",
+    "stage-opportunity",
+    "stage-brief"
+  ],
+  "final_folders": [
+    "01-framed-brief",
+    "02-research"
+  ],
+  "source_folder": true,
+  "templates_dir": "assets/templates",
+  "step_tracker": "assets/stage/step-tracker.md",
+  "handoff": {
+    "must_be_able_to_do": "Write two direction cards without going back to the client, and see which facts are high and which are low confidence",
+    "does_not_include": "A full PRD, any solution direction, and any research not yet done"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "stage": "ship",
+  "title": "Ship",
+  "number": 4,
+  "skill": "koru-ship",
+  "core_version": 1,
+  "types": ["user-story", "deliverable", "ticket", "handoff-note", "pr-readiness", "review"],
+  "required_roles": ["Engineer", "Design lead", "Design engineer", "Second-person checker pool"],
+  "draft_folders": ["stories", "deliverable", "tickets", "handoff", "review"],
+  "final_folders": ["07-ship"],
+  "source_folder": true,
+  "templates_dir": "assets/templates",
+  "step_tracker": "assets/stage/step-tracker.md",
+  "size": {
+    "small": "One flow: 3 to 5 tickets, one HTML deliverable",
+    "large": "More than one flow or more than 5 stories: run Ship once per flow, each with its own deliverable and 3 to 5 tickets"
+  },
+  "handoff": {
+    "must_be_able_to_do": "Build the core flow from the tickets, the HTML deliverable and the tokens without coming back to the design team: every ticket has acceptance criteria for every state, role permission, AI behaviour and edge case it covers, every Harden Ship note is closed or carried, every remaining question has an owner, and the engineer's review questions are answered or listed",
+    "does_not_include": "Production code, a pull request or merged changes, journey tests running in CI, flows other than the core flow, anything a ticket lists as out of scope, and screenshot image files (tickets link to the deliverable's anchors instead)"
+  }
+}

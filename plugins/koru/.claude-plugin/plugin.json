@@ -1,0 +1,9 @@
+{
+  "name": "koru",
+  "displayName": "Koru delivery playbook",
+  "version": "0.1.0",
+  "description": "Runs a Koru engagement through Frame, Explore, Harden and Ship from one command (/koru:next). Shared rules and checks live in koru-core; each stage is one skill; reviewer agents give an independent read; hooks stop drafts becoming project knowledge.",
+  "author": { "name": "Koru Team 4" },
+  "keywords": ["koru", "frame", "explore", "harden", "ship", "playbook", "design-ops"],
+  "license": "LicenseRef-Koru-Internal"
+}

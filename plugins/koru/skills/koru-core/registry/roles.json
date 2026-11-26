@@ -1,0 +1,59 @@
+{
+  "roles": [
+    {
+      "name": "Researcher",
+      "description": "Runs the AI-led steps with Claude, converts sources, judges synthesis, drafts"
+    },
+    {
+      "name": "Research owner",
+      "description": "Checks TRACES, the pack and the problem space; signs the research pack"
+    },
+    {
+      "name": "Senior",
+      "description": "Checks opportunities, constraints and success outcomes; signs the brief"
+    },
+    {
+      "name": "Team lead",
+      "description": "Leads the engagement day to day; owns the review rhythm and handoffs between stages"
+    },
+    {
+      "name": "Context keeper",
+      "description": "The one role accountable for the Claude project context: uploads only final files, removes replaced versions, owns the stale-check rhythm and says when knowledge is out of date"
+    },
+    {
+      "name": "Designer",
+      "description": "Runs a design session with Claude, decides at the checkpoints; in Explore this is the person in charge of the work"
+    },
+    {
+      "name": "Design lead",
+      "description": "Leads design work in later stages; checks and signs design artefacts"
+    },
+    {
+      "name": "Rulebook owner",
+      "description": "Owns the rulebook and design library in Harden"
+    },
+    {
+      "name": "Developer",
+      "description": "Takes part through the constraints review: tech limits, existing system and integrations"
+    },
+    {
+      "name": "Engineer",
+      "description": "Builds and checks feasibility in later stages"
+    },
+    {
+      "name": "Design engineer",
+      "description": "Bridges design and code (components, tokens) in later stages"
+    },
+    {
+      "name": "Second-person checker pool",
+      "description": "Any person other than the one who ran the step; names go in the read-me"
+    }
+  ],
+  "client_lines": [
+    "Decision makers",
+    "Review rhythm"
+  ],
+  "aliases": {
+    "Second-person checker": "Second-person checker pool"
+  }
+}
