@@ -48,7 +48,10 @@ Interactive map of every step and who does it: ask Chetna for the "Koru Delivery
 - **Sources are never edited and finals are never overwritten.** Make the next version. A hook blocks it if you try.
 - **Only `-final` files signed off in the decisions log go into the numbered final folders**, and only those go into Claude project knowledge. The **context keeper** uploads them.
 - **The stale-check** flags anything built on an older version; a flagged file can't be signed off.
-- **Frame's short route:** the team lead can skip or fold the slow Frame steps (new research, separate synthesis, the HTML summary). Each skip is logged with a reason.
+- **Optional steps:** some steps are marked optional (Frame 8, 9, 10, 11, 14b, 20; Explore A6, A15; Harden H13). `/koru:next` asks the team lead to run or skip each one, and the skip is logged with their name. Any other step can only be skipped as a logged override.
+- **A step waiting on its checker is not re-run.** `/koru:next` asks the named checker one question: pass, or changes needed.
+- **Reviewer agents run inside the step.** Answer in the main conversation, not in the agent's window: nothing said to an agent counts as a decision.
+- **Ship works in iterations.** Each handoff to the build team gets its own card (`handoff-card-v1`, `-v2`, ...). When the build team comes back with feedback, the next round starts with a logged decision, and every changed file is a new version.
 
 ## 5. No Jira access?
 

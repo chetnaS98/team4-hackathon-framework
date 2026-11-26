@@ -7,6 +7,10 @@ Nodes: every derived artefact (front matter has `type:`) in the engagement; sour
 in stages/*/sources/ and --kb folders; and rows of artefact-registry.md that match no file (Figma frames,
 tickets...), with their version, status and `Derives from`.
 Edges: `derives_from` in front matter, `src:` pointers on traceable lines, and [[name]] pinned links.
+`reviews:` in front matter lists what an artefact audited or reviewed (an evidence audit of traces v1, a
+critique of design v1). Those pointers must resolve, but a newer version of a reviewed file does not make the
+review stale: the review is a record of that version, and is usually why the newer version exists.
+Files in a `superseded/` folder are indexed so pointers to them resolve; they are never checked themselves.
 Pointer forms: file names (with optional §section), and figma:/jira:/github:/url: pointers resolved through
 the registry's Pointer column (an optional @vN pins a version).
 
@@ -72,34 +76,37 @@ def main():
         sys.exit(f"ERROR: engagement folder not found: {eng}")
 
     nodes = {}
-    def add(path, derived_ok):
+    def add(path, derived_ok, superseded=False):
         stem = path.stem
         text = path.read_text(encoding="utf-8", errors="replace")
         fm, body, _ = front(text)
         fam, ver, st = parse_name(stem)
-        derived = derived_ok and "type" in fm
+        derived = derived_ok and "type" in fm and not superseded
         status = fm.get("status") or st or ("draft" if derived else "raw")
         if stem in nodes and nodes[stem]["derived"] and not derived:
             return
-        deps = []
+        deps, reviews = [], []
         if derived:
+            rv = fm.get("reviews", [])
+            reviews = [rv] if isinstance(rv, str) and rv else list(rv or [])
             df = fm.get("derives_from", [])
             df = [df] if isinstance(df, str) and df else (df or [])
             deps = list(df) + pointers_of(body)
         nodes[stem] = {"path": path, "fam": fam, "ver": ver, "status": status, "derived": derived,
                        "stage": fm.get("stage") or "", "kind": fm.get("type") if derived else "source",
-                       "deps": list(dict.fromkeys(deps)), "external": False, "pointer": None}
+                       "deps": list(dict.fromkeys(d for d in deps if d not in reviews)), "reviews": reviews,
+                       "superseded": superseded, "external": False, "pointer": None}
 
     for p in sorted(eng.rglob("*.md")):
         if p.name.startswith(("00-", "05-")) or p.name in SKIP_NAMES or "templates" in p.parts \
-                or "superseded" in p.parts or ".koru" in p.parts or "handoff-cards" in p.parts:
+                or ".koru" in p.parts or "handoff-cards" in p.parts:
             continue
-        add(p, True)
+        add(p, True, superseded="superseded" in p.parts)
     for p in sorted(eng.rglob("*.html")):
         parts = p.parts
-        if "templates" in parts or "superseded" in parts or ".koru" in parts:
+        if "templates" in parts or ".koru" in parts:
             continue
-        add(p, "sources" not in parts)  # HTML artefacts (wireframes) count as derived; HTML in sources/ is a source
+        add(p, "sources" not in parts, superseded="superseded" in parts)  # HTML artefacts (wireframes) count as derived; HTML in sources/ is a source
     for kb in a.kb:
         kbp = Path(kb).expanduser()
         if not kbp.is_dir():
@@ -137,6 +144,10 @@ def main():
         if not n["derived"]:
             continue
         resolved[stem] = []
+        for d in n.get("reviews", []):
+            dfam, dver, _ = parse_name(d)
+            if not any(v == dver for (v, s) in fams.get(dfam, [])):
+                direct.setdefault(stem, []).append(f"broken pointer in reviews: '{d}' matches no artefact or source")
         for d in n["deps"]:
             m = EXT.match(d)
             if m:

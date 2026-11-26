@@ -18,6 +18,6 @@ Then:
 4. Check the drafts: any claim marked high without two independent sources or direct data; any claim with no `src:`; any contradiction the register misses.
 5. List people who appear in data, tickets or tech notes but in no persona (for example temporary staff, night shifts, people without accounts).
 
-Write `stages/frame/drafts/stage-research/<project>-frame-insight-evidence-audit-v<n>-draft.md` with koru-core front matter (type insight, stage frame, status draft, `derives_from` every file you read) and four sections: "Claims the data doesn't support", "Contradictions missing from the register", "Confidence to change" (claim, current, proposed, why), "People missing from the personas". Every line is a traceable line: `- <assertion>. [high|medium|low] src: <file> §<section or row>`.
+Write `stages/frame/drafts/stage-research/<project>-frame-insight-evidence-audit-v<n>-draft.md` with koru-core front matter (type insight, stage frame, status draft, `reviews` the drafts you audited, pinned to the version you read, `derives_from` the sources you read, not the drafts you audited) and four sections: "Claims the data doesn't support", "Contradictions missing from the register", "Confidence to change" (claim, current, proposed, why), "People missing from the personas". Every line is a traceable line: `- <assertion>. [high|medium|low] src: <file> §<section or row>`.
 
 Return a summary of the five findings that matter most. You don't decide anything; the research owner does.

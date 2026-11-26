@@ -25,7 +25,9 @@ Without `--engagement` it searches the working folder. Show its summary in 2 to 
 | `CHOOSE` | List the engagements and ask which one; use it as `--engagement` from now on. |
 | `BLOCKED` | Say each reason in plain words and what unblocks it. Roles missing: ask for exactly those names in one message, write **only names the user gives** into the read-me Roles/Client lines, route again. A stage skill not installed: say that stage isn't built and stop. |
 | `START` | Say which stage starts and which roles it needs. On a yes, run koru-core `init_stage.py --engagement <e> --stage-dir <skill_dir from route.py>`, then route again. |
-| `DISPATCH` | Invoke the stage skill with the Skill tool: `koru:<skill>` with args `engagement=<path> step=<next step>`. It loads koru-core and runs core's step loop. When the step's checker passes it, record it with `step.py` (section 4), not by editing the table. |
+| `DISPATCH` | Invoke the stage skill with the Skill tool: `koru:<skill>` with args `engagement=<path> step=<next step>`, plus the `Progress:` line if route printed one, so it picks up where the step stopped instead of starting over. It loads koru-core and runs core's step loop. At the end of the step, record it as `in check` with `--waiting-on` and `--note` (section 4). |
+| `CHECK` | The step is drafted and waiting on its checker. **Do not re-run it.** Ask **one** question with AskUserQuestion: "<checker>, is step <id> passed?" with the options "Pass" and "Changes needed" (if route says no checker is named, ask who checks it first, from the Roles table, never the person who ran it). Pass: `step.py --status passed --checker "<name>"`. Changes: dispatch the stage skill with the checker's words. Never bundle other decisions into this question; ask them in a separate question. |
+| `OPTIONAL` | The next step is optional. Ask the **team lead** one question: run it, or skip it with the reason route printed. If route lists several optional steps not started, ask once which of them apply and skip the rest with `step.py --skip-optional --by "<team lead>" --keep <ids to run>`. Then route again. |
 | `HANDOFF` | Run `advance_stage.py --engagement <e> --dry-run` and show the result. If it refuses, say what's missing and dispatch to the stage skill that owns the fix (handoff card, final files). If it passes, ask the **team lead** to confirm by name, then run it with `--confirmed-by "<name>"`. |
 | `DONE` | Every stage is handed off. Say so, and offer the stale-check or a send-back if something changed. |
 
@@ -56,7 +58,9 @@ Then:
 
 ## 4. Keeping the record straight (use the scripts, not hand edits)
 
-- Step status: `step.py --engagement <e> --step <id> --status drafted|in check|passed|skipped [--checker "<name>"] [--reason "<why>"]`. `passed` needs a named checker; `skipped` needs a reason (logged).
+- Step status: `step.py --engagement <e> --step <id> --status drafted|in check|passed|skipped [--checker "<name>"] [--waiting-on "<name>"] [--note "<one line>"] [--by "<name>"] [--reason "<why>"]`. `passed` needs a named checker. `skipped` needs `--by` (who decided); optional steps carry a default reason, any other step also needs `--reason` and `--override` and is logged as an override.
+- **Record progress at every pause inside a step** with `--note` (for example `--status drafted --note "evidence-auditor running"`, then `--status "in check" --waiting-on Sanvika --note "audit folded into traces v2; lint and stale-check clean"`). Route shows the note, so the next turn, or a new session, knows exactly what is done.
+- **Reviewer agents run in the foreground**, never in the background (a hook refuses a background launch). Their report comes back as the tool result in the same turn: fold it in and carry on with the step. Never tell the user to talk to the agent; nothing said to an agent counts as a decision.
 - Sign-off and promote to final: `signoff.py --engagement <e> --file <draft> --by "<name>" [--role <role>]`. It refuses while the stale-check flags the artefact.
 - Breaks and playbook changes: `/koru:break`, `/koru:change`.
 - Status only: `/koru:status`.

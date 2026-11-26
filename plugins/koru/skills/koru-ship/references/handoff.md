@@ -55,6 +55,7 @@ The engineer's words are a source: save them verbatim in `stages/ship/sources/`.
 | Where it lives and what it's called | `07-ship/` (for example `demo-ship-ticket-01-book-room-v1-final`, `demo-ship-deliverable-v1-final.html`), `07-ship/export/`, and the delivered copies in Jira or GitHub with the `koru-final` label (registry rows with their pointers) |
 | What the next stage must be able to do with it | Build the core flow from the tickets, the HTML deliverable and the tokens without coming back to the design team: every ticket has acceptance criteria for every state, role permission, AI behaviour and edge case it covers, every Harden Ship note is closed or carried, every remaining question has an owner, and the engineer's review questions are answered or listed |
 | What it doesn't include | Production code, a pull request or merged changes, journey tests running in CI, flows other than the core flow, anything a ticket lists as out of scope, and screenshot image files (tickets link to the deliverable's anchors instead) |
+| Iteration | The iteration number, and for iteration 2 or later what changed since the previous card (link it) |
 | Who signs it off | The engineer and the design lead, by name |
 | Checked by the next stage (name) | The build team's engineer, by name |
 | Stale-check result | No open warnings on any artefact in the handoff, with the date |
@@ -79,5 +80,5 @@ If writing tickets shows that Harden's design will not hold as stated (a state, 
 | Handoff note, PR readiness | S5 | S6, S7 | Design engineer | Engineer | `07-ship/` |
 | Review (agent) | S6 | n/a | Design lead | (checked) | `07-ship/` |
 | Review (engineer) | S7 | n/a | Engineer (their own words) | Engineer | `07-ship/` |
-| Ticket export | S8 | Each new final ticket version | Engineer | (generated) | `07-ship/export/` |
-| Handoff card | S9 | n/a | Build team's engineer | Engineer and design lead | `handoff-cards/` |
+| Ticket export | S8 | Each new final ticket version | Engineer | (generated) | `07-ship/export/iteration-<n>/` |
+| Handoff card | S9, once per iteration (`-v1`, `-v2`, ...) | never: the next iteration gets a new card | Build team's engineer | Engineer and design lead | `handoff-cards/` |

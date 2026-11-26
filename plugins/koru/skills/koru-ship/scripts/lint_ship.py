@@ -309,6 +309,14 @@ def check(path, tokens, screens):
         errs, warns = check_deliverable(raw, tokens, screens)
     elif t == "handoff-note":
         errs, secs = check_parts(body, NOTE_PARTS, "handoff note")
+        try:
+            it = int(str(fm.get("iteration", 1)).strip())
+        except ValueError:
+            it = 1
+            errs.append("front matter 'iteration' is not a number")
+        if it >= 2 and not re.search(rf"^##\s+What changed since iteration {it - 1}\b", body, re.M | re.I):
+            errs.append(f"iteration {it} handoff note needs a '## What changed since iteration {it - 1}' section "
+                        "(what the build team's feedback changed, with the new versions)")
         words = sum(len(" ".join(secs.get(p, [])).split()) for p in NOTE_PARTS)
         if words > 350:
             warns.append(f"handoff note is {words} words across its four parts; half a page is about 250 to 300")

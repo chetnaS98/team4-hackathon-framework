@@ -40,5 +40,31 @@
   "handoff": {
     "must_be_able_to_do": "Write two direction cards without going back to the client, and see which facts are high and which are low confidence",
     "does_not_include": "A full PRD, any solution direction, and any research not yet done"
+  },
+  "optional_steps": {
+    "8": {
+      "skip_reason": "Short route: no new research this round; step 7 client questions cover the gaps",
+      "run_when": "Discovery path with time for primary research"
+    },
+    "9": {
+      "skip_reason": "Short route: no new transcripts or secondary research this round",
+      "run_when": "Step 8 produced new interviews or desk research"
+    },
+    "10": {
+      "skip_reason": "Short route: all material arrived and was converted at step 1",
+      "run_when": "New material arrived after step 1"
+    },
+    "11": {
+      "skip_reason": "Short route: synthesis folded into step 12",
+      "run_when": "A large engagement with many sources"
+    },
+    "14b": {
+      "skip_reason": "No current platform exists (no mock, screenshots or live product)",
+      "run_when": "There is a current platform to review"
+    },
+    "20": {
+      "skip_reason": "The client did not ask for an HTML summary",
+      "run_when": "The client wants an HTML summary"
+    }
   }
 }

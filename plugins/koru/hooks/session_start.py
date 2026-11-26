@@ -33,7 +33,7 @@ def main():
     r = subprocess.run([sys.executable, "-I", str(ROOT / "scripts" / "route.py"), "--engagement", str(found[0])],
                        capture_output=True, text=True, timeout=60)
     lines = [l for l in r.stdout.splitlines() if l and not l.startswith("  ")]
-    print("koru engagement status:\n" + "\n".join(lines[:8]))
+    print("koru engagement status:\n" + "\n".join(lines[:14]))
     print(RULES)
 
 

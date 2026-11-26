@@ -57,9 +57,11 @@ Every phase runs the same loop, so the human always knows what is happening and 
 1. **Announce** the step in two lines: number and name, mode, what you will do, who checks it.
 2. **Do the work** if it is AI-led or AI-assisted. For human-led steps, say what the person needs to do and what to bring back, then wait.
 3. **Write the output** as a file with the correct front matter, naming and `draft` status, in the right drafts folder. Run the lint (`scripts/lint_core.py`, plus the phase's own checks) and fix what it reports before handing over.
-4. **Hand to the checker** with a short checklist: what the output is sure about, where each assertion came from, what is missing. Ask for the checker's name and verdict. Do not move on your own say-so.
+4. **Hand to the checker** with a short checklist: what the output is sure about, where each assertion came from, what is missing. Ask for the checker's name and verdict. Do not move on your own say-so. Record it as `in check` with the checker's name and a one-line note of what is done (the plugin's `step.py --status "in check" --waiting-on <name> --note "..."`), so the next turn or session sees exactly where the step stands. Ask for the verdict as one question on its own; other decisions get their own question.
 5. **Record**: update the step tracker, add decisions-log lines, add AI-quality-log lines (with stage and category) for anything caught, add contradictions, assumptions and open questions to their registers.
 6. **Move on** only when the checker has passed it. Offer the next step in one line, with its mode.
+
+**Reviewer agents** (evidence-auditor, feasibility-engineer, hardening-critic, handoff-reviewer) run in the foreground, inside the step: their report comes back in the same turn, you fold it in, and the step carries on. They only report; nothing said to an agent is a decision.
 
 Do not run several steps in one go unless the user explicitly asks you to draft ahead. Even then, each output stays `draft` until its checker has passed it. A fast wrong output costs more than a slow right one.
 

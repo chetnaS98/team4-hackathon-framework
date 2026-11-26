@@ -52,6 +52,7 @@ external_url: https://...   # optional; where the artefact lives if it is not a 
 
 - `title`: `Project | Stage | Type Topic | vN`.
 - `derives_from`: the artefacts this one is built from, named with their version and no status suffix. This is what the stale-check follows across stages: a new brief version flags the direction cards built on it, a changed direction flags hardening, a changed design flags tickets. List it even when every assertion also carries a `src:` pointer.
+- `reviews` (optional): what this artefact audited, critiqued or reviewed, pinned to the version it read (an evidence audit of traces v1, a critique of design v1). The stale-check makes sure these names exist, but a newer version of a reviewed file does not make the review stale: the review is the record of that version and is usually why the newer one exists. Put a file in `reviews`, not `derives_from`, when the artefact judges it rather than builds on it. When a reviewed file moves to `superseded/`, the pointer still resolves.
 - `external_url`: for an artefact whose real home is not a file (a Figma frame, a Jira ticket, an HTML page). The file then holds the description and registry data, and the registry row carries the link.
 - The `stage` field is new in core. Older files without it are treated as the stage in their file name, with a warning.
 - Do not add other fields without registering them here.

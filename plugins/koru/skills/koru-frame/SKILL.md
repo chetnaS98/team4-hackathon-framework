@@ -76,7 +76,7 @@ After step 20: fill the handoff card (`references/handoff.md`).
 
 ## The short route (default when all the material arrives at once)
 
-The 24 steps are the full playbook. Most engagements, and every time-boxed run, don't need all of them. The step numbers never change; a folded or skipped step is recorded with `scripts/step.py --status skipped --reason "<why>"` (the reason goes in the decisions log), so the record shows what was left out. Ask the team lead once, at step 4, whether to take the short route.
+The 24 steps are the full playbook. Most engagements, and every time-boxed run, don't need all of them. The step numbers never change; steps 8, 9, 10, 11, 14b and 20 are marked optional in `stage.json`, each with a default skip reason. Ask the team lead once, at step 4, whether to take the short route and which optional steps apply, then record it in one go: `step.py --skip-optional --by "<team lead>" [--keep 14b]`. Each skip goes in the decisions log with the team lead's name. When `/koru:next` reaches an optional step that was not skipped, it asks the team lead to run or skip it. Steps that are not optional can only be skipped as a logged override.
 
 | Steps | Short route | When to run them in full |
 |---|---|---|
