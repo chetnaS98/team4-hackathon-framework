@@ -33,15 +33,13 @@ flowchart TD
   plug --> sk["skills/"]
 
   sk --> core["koru-core<br/>shared rules"]
-  sk --> fr["koru-frame<br/>brief, research"]
-  sk --> exp["koru-explore<br/>Design v1"]
-  sk --> hd["koru-harden<br/>states, tokens"]
-  sk --> sh["koru-ship<br/>HTML, tickets"]
-
-  fr -.-> exp -.-> hd -.-> sh
+  sk --> fr["1 · koru-frame<br/>brief, research"]
+  sk --> exp["2 · koru-explore<br/>Design v1"]
+  sk --> hd["3 · koru-harden<br/>states, tokens"]
+  sk --> sh["4 · koru-ship<br/>HTML, tickets"]
 ```
 
-Solid lines are folders; dotted lines are the order the stages hand on. The file-by-file tree is in [plugins/koru/README.md](plugins/koru/README.md#site-map).
+The numbers are the order the stages hand on: Frame, Explore, Harden, Ship. The file-by-file tree is in [plugins/koru/README.md](plugins/koru/README.md#site-map).
 
 ## The koru plugin (the full playbook)
 
