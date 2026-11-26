@@ -18,7 +18,9 @@ Per artefact type (read from the front matter `type:`; only stage `ship` files a
   deliverable       (.html) self-contained; "Step N:" labels in order, each with id="step-N"; each
                     "State: X" label has id="step-N-state-<x>"; a state switcher (id or class
                     "state-switcher"); a "Design system gaps" section; no raw colour outside :root;
-                    no add-ons
+                    no add-ons; the Intro.js walkthrough (only the pinned Intro.js files may be external;
+                    a #start-tour button; a #tour-steps JSON block whose steps all have intro text and
+                    point at ids on the page, with one on the state switcher and one in every Step N)
   handoff-note      the four parts (What's in the deliverable, What's not, Decisions engineers should
                     know about, Who to ask), none empty; warns above about half a page (350 words)
   pr-readiness      the seven sections, none empty
@@ -39,6 +41,7 @@ Across files: warns if the latest tickets number fewer than 3 or more than 5.
 Exit 1 if there are errors.
 """
 import argparse
+import json
 import os
 import re
 import subprocess
@@ -223,12 +226,58 @@ def html_labels(raw):
     return out
 
 
+INTROJS = "https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/"
+INTROJS_TAGS = [
+    re.compile(r'<link[^>]+href\s*=\s*"' + re.escape(INTROJS + "introjs.min.css") + r'"[^>]*>', re.I),
+    re.compile(r'<script[^>]+src\s*=\s*"' + re.escape(INTROJS + "intro.min.js") + r'"[^>]*>\s*</script>', re.I),
+]
+
+
+def check_tour(raw, ids, labels):
+    """The Intro.js walkthrough (references/walkthrough.md)."""
+    errs = []
+    if not all(p.search(raw) for p in INTROJS_TAGS):
+        errs.append(f"walkthrough: Intro.js must be loaded from {INTROJS} (introjs.min.css and intro.min.js)")
+    if "start-tour" not in ids:
+        errs.append("walkthrough: no 'Take the tour' button with id=\"start-tour\"")
+    m = re.search(r'<script[^>]+id\s*=\s*"tour-steps"[^>]*>(.*?)</script>', raw, re.S | re.I)
+    if not m:
+        errs.append("walkthrough: no <script type=\"application/json\" id=\"tour-steps\"> block")
+        return errs
+    try:
+        steps = json.loads(m.group(1)).get("steps", [])
+    except (ValueError, AttributeError):
+        return errs + ["walkthrough: the tour-steps JSON does not parse (it needs {\"steps\": [...]})"]
+    if not steps:
+        return errs + ["walkthrough: the tour has no steps"]
+    targets = []
+    for i, s in enumerate(steps, 1):
+        if not str(s.get("intro", "")).strip() or str(s.get("intro", "")).startswith("TODO"):
+            errs.append(f"walkthrough: tour step {i} has no intro text")
+        el = str(s.get("element", "")).strip()
+        if el:
+            if not el.startswith("#") or el[1:] not in ids:
+                errs.append(f"walkthrough: tour step {i} points at '{el}', which is not an id on the page")
+            targets.append(el[1:])
+        if re.search(r"\badd-ons?\b", json.dumps(s), re.I):
+            errs.append(f"walkthrough: tour step {i} mentions add-ons; the tour covers only what the deliverable does")
+    if "state-switcher" not in targets:
+        errs.append("walkthrough: no tour step on the state switcher (#state-switcher)")
+    for n, _ in labels:
+        if not any(tg == f"step-{n}" or tg.startswith(f"step-{n}-") for tg in targets):
+            errs.append(f"walkthrough: no tour step on Step {n} (#step-{n} or one of its states or controls)")
+    return errs
+
+
 def check_deliverable(raw, tokens, screens):
     errs, warns = [], []
+    raw_tour = raw
+    for pat in INTROJS_TAGS:
+        raw = pat.sub("", raw)
     if re.search(r"<script[^>]+src\s*=", raw, re.I) or re.search(r"<link[^>]+href\s*=\s*[\"']?(https?:)?//", raw, re.I) \
             or re.search(r"<img[^>]+src\s*=\s*[\"']?(https?:)?//", raw, re.I) or re.search(r"@import\s+url\(", raw, re.I) \
             or re.search(r"url\(\s*[\"']?(https?:)?//", raw, re.I):
-        errs.append("deliverable is not self-contained (external script, stylesheet, font or image)")
+        errs.append("deliverable is not self-contained (external script, stylesheet, font or image; only the pinned Intro.js files are allowed)")
     labels = html_labels(raw)
     if not labels:
         errs.append("no 'Step N:' labels inside <main>")
@@ -276,6 +325,7 @@ def check_deliverable(raw, tokens, screens):
         for k in sorted(set(re.findall(r"var\(\s*--([a-z0-9-]+)", outside, re.I))):
             if k not in tokens:
                 errs.append(f"var(--{k}) is not a design library token")
+    errs += check_tour(raw_tour, ids, labels)
     if screens is not None:
         have = {(n, slug(s)) for n, ss in labels for s in ss}
         for n, ss in html_labels(Path(screens).read_text(encoding="utf-8")):

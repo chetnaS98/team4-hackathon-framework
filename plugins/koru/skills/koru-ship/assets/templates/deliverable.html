@@ -17,8 +17,10 @@ derives_from: []
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Deliverable: TODO flow name (v1)</title>
+<!-- The walkthrough: Intro.js 7.2.0, the only external files allowed (references/walkthrough.md). -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/introjs.min.css">
 <style>
-  /* Self-contained: no external scripts, stylesheets, fonts or images.
+  /* Self-contained apart from Intro.js: no other external scripts, stylesheets, fonts or images.
      Paste tokens.css from 04-design-library here, verbatim. Do not add or change values. */
   :root {
     --color-text: #1a1a1a;
@@ -42,10 +44,13 @@ derives_from: []
   .label { font-size: 12px; margin: 0 0 var(--space-2); }
   .sample { font-size: 12px; }
   a:focus-visible, button:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 2px; }
+  .tour-button { margin-left: var(--space-4); padding: var(--space-1) var(--space-2); border: 1px solid var(--color-accent); border-radius: var(--radius-1); background: var(--color-surface); color: var(--color-accent); font: inherit; cursor: pointer; }
+  .introjs-tooltip { font-family: inherit; color: var(--color-text); }
 </style>
 </head>
 <body>
 <nav class="state-switcher" id="state-switcher" aria-label="Jump to a step and state">
+  <button type="button" class="tour-button" id="start-tour">Take the tour</button>
   <ul>
     <li><a href="#step-1">Step 1</a> · <a href="#step-1-state-empty">Empty</a> · <a href="#step-1-state-loading">Loading</a> · <a href="#step-1-state-error">Error</a> · <a href="#step-1-state-success">Success</a></li>
   </ul>
@@ -79,5 +84,39 @@ derives_from: []
     </tbody>
   </table>
 </section>
+<!-- Tour steps (references/walkthrough.md): one per screen, one for the state switcher, one per feature
+     and interaction a new user must learn. Every "element" must be an id on this page. No add-ons. -->
+<script type="application/json" id="tour-steps">
+{
+  "steps": [
+    { "title": "Welcome", "intro": "TODO: what this flow is for and who uses it, in one sentence. All data on this page is sample data." },
+    { "element": "#state-switcher", "title": "Jump to any step", "intro": "Use these links to see every step and every state: empty, loading, errors and more." },
+    { "element": "#step-1", "title": "TODO screen name", "intro": "TODO: what the user does on this screen." },
+    { "element": "#step-1-state-success", "title": "TODO main action", "intro": "TODO: what to press, what happens next, and how to undo it." }
+  ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intro.js/7.2.0/intro.min.js"></script>
+<script>
+  // Starts the walkthrough. If Intro.js did not load (offline), the button hides and the page works as before.
+  (function () {
+    var btn = document.getElementById("start-tour");
+    var data = null;
+    try { data = JSON.parse(document.getElementById("tour-steps").textContent); } catch (e) { data = null; }
+    if (typeof window.introJs !== "function" || !data || !data.steps) { if (btn) btn.hidden = true; return; }
+    var steps = data.steps.map(function (s) {
+      var o = { title: s.title, intro: s.intro };
+      if (s.element) { var el = document.querySelector(s.element); if (el) o.element = el; }
+      return o;
+    });
+    function start() {
+      window.introJs().setOptions({ steps: steps, showProgress: true, scrollToElement: true,
+        exitOnOverlayClick: false, nextLabel: "Next", prevLabel: "Back", doneLabel: "Done" }).start();
+    }
+    btn.addEventListener("click", start);
+    var key = "koru-tour-seen:" + location.pathname;
+    try { if (!window.localStorage.getItem(key)) { window.localStorage.setItem(key, "1"); start(); } } catch (e) { /* storage blocked: no auto-start */ }
+  })();
+</script>
 </body>
 </html>

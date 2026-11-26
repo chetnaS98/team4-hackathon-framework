@@ -61,7 +61,7 @@ Every phase runs the same loop, so the human always knows what is happening and 
 5. **Record**: update the step tracker, add decisions-log lines, add AI-quality-log lines (with stage and category) for anything caught, add contradictions, assumptions and open questions to their registers.
 6. **Move on** only when the checker has passed it. Offer the next step in one line, with its mode.
 
-**Reviewer agents** (evidence-auditor, feasibility-engineer, hardening-critic, handoff-reviewer) run in the foreground, inside the step: their report comes back in the same turn, you fold it in, and the step carries on. They only report; nothing said to an agent is a decision.
+**Reviewer agents** (evidence-auditor, feasibility-engineer, hardening-critic, handoff-reviewer) run inside the step. Record that the agent is running (`step.py --note`); when its report arrives, fold it in and carry on with the same step in that turn. They only report; nothing said to an agent is a decision.
 
 Do not run several steps in one go unless the user explicitly asks you to draft ahead. Even then, each output stays `draft` until its checker has passed it. A fast wrong output costs more than a slow right one.
 
