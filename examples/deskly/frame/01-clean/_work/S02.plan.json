@@ -1,0 +1,12 @@
+{"product":"deskly","workflow":["approving-booking"],"content_type":"transcript","qualifier":"s02","version":1,
+ "personas":["approving-manager"],"lifecycle":["approve"],"research_type":"discovery","date":"2026-11-20",
+ "description":"Informed follow-up call with an approving manager confirming the Tuesday trigger and describing policy checks outside the approval screen.",
+ "context":"Deskly, approving a booking, Frame stage: informed (refining) interview transcript S02 (made-up test data).",
+ "overview":"'Speaker 1' = approving manager (S02). 'Moderator' = researcher. About 3 minutes. Confirms an earlier trigger, then covers the approval flow, the two-day cap, past fixes and rejections.",
+ "source_file":"S02.txt","participants":1,"confidentiality":"internal",
+ "sections":[{"line":1,"title":"Confirming the Tuesday trigger","summary":"S02 approving manager confirms and extends the earlier trigger."},
+  {"line":3,"title":"Approving a booking against policy","summary":"S02 approving manager leaves the approval screen to check the cap."},
+  {"line":6,"title":"What is known and assumed about the cap","summary":"S02 approving manager on the two-day cap and team days."},
+  {"line":8,"title":"What has been tried for approvals","summary":"S02 approving manager on the IT spreadsheet."},
+  {"line":10,"title":"Who is involved in rejections","summary":"S02 approving manager on complaints and Slack threads."},
+  {"line":12,"title":"Close and commitments","summary":"Moderator commits to tagging and sharing back with S02."}]}

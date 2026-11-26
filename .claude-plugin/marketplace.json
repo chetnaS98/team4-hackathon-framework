@@ -1,0 +1,12 @@
+{
+  "name": "team4-koru",
+  "owner": { "name": "Koru Team 4" },
+  "description": "Team 4's Koru delivery playbook as one Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "koru",
+      "source": "./plugins/koru",
+      "description": "Koru delivery playbook: Frame, Explore, Harden, Ship from one command."
+    }
+  ]
+}
