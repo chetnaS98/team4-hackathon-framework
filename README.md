@@ -15,6 +15,36 @@ built as Claude Code skills plus small deterministic scripts. People review befo
 | `framework/` | Pipeline scripts and docs. Start with [framework/README.md](framework/README.md). |
 | `examples/deskly/` | Made-up test project (no real people or clients). |
 
+## Site map
+
+```mermaid
+flowchart LR
+  repo["team4-hackathon-framework"]
+  repo --> mkt[".claude-plugin/<br/>marketplace.json"]
+  repo --> onb["ONBOARDING.md"]
+  repo --> fw["framework/<br/>Frame pipeline scripts"]
+  repo --> ex["examples/deskly/<br/>made-up test project"]
+  repo --> rs[".claude/skills/<br/>research formatter,<br/>frame-clean-synthesise"]
+  repo --> plug["plugins/koru/<br/>the koru plugin"]
+
+  plug --> cmd["commands/<br/>next · status · break · change"]
+  plug --> ag["agents/<br/>evidence-auditor · feasibility-engineer<br/>hardening-critic · handoff-reviewer"]
+  plug --> hk["hooks/<br/>guard · session_start · agent_done"]
+  plug --> sc["scripts/<br/>route · intake · step · signoff<br/>advance_stage · iteration · log"]
+  plug --> docs["docs/koru-flow.html"]
+  plug --> sk["skills/"]
+
+  sk --> core["koru-core<br/>rules · naming · logs · registers<br/>roles gate · stale-check"]
+  sk --> fr["koru-frame<br/>framed brief · research pack"]
+  sk --> exp["koru-explore<br/>two ideas · Design v1"]
+  sk --> hd["koru-harden<br/>states · roles · edge cases<br/>accessibility · tokens · rulebook"]
+  sk --> sh["koru-ship<br/>HTML + Intro.js walkthrough<br/>tickets · handoff"]
+
+  fr -.-> exp -.-> hd -.-> sh
+```
+
+Solid lines are folders; dotted lines are the order the stages hand on. The file-by-file tree is in [plugins/koru/README.md](plugins/koru/README.md#site-map).
+
 ## The koru plugin (the full playbook)
 
 The plugin runs a whole engagement through **Frame → Explore → Harden → Ship**. Claude drafts; a named person checks every AI step; only signed-off files become project knowledge. Install it once in Claude Code, from this repo:
