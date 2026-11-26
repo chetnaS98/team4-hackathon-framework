@@ -21,6 +21,13 @@ Per artefact type (read from the front matter `type:`; only stage `ship` files a
                     no add-ons; the Intro.js walkthrough (only the pinned Intro.js files may be external;
                     a #start-tour button; a #tour-steps JSON block whose steps all have intro text and
                     point at ids on the page, with one on the state switcher and one in every Step N)
+  react-starter     (optional S3b; the manifest <folder>/<folder>.md of a <project>-ship-react-starter-v<n>-<status>/
+                    folder) the manifest's four sections; package.json with exact versions and a build script;
+                    src/tokens.css is Harden's tokens.css verbatim; no raw colour, no var(--x) outside the
+                    tokens, no URL, no fetch/axios/XMLHttpRequest/WebSocket and no import missing from
+                    package.json in src/; every row of "Screens and components" names a component file that
+                    carries "koru-anchor: #step-N"; with --screens, every Harden step has a row and every state
+                    of that step is in its component as a quoted id ("ai-low-confidence")
   handoff-note      the four parts (What's in the deliverable, What's not, Decisions engineers should
                     know about, Who to ask), none empty; warns above about half a page (350 words)
   pr-readiness      the seven sections, none empty
@@ -59,7 +66,7 @@ def _core_scripts():
 
 CORE_SCRIPTS = _core_scripts()
 sys.path.insert(0, str(CORE_SCRIPTS))
-from _common import front, parse_name  # noqa: E402
+from _common import front, in_code_folder, parse_name  # noqa: E402
 
 TICKET_FIELDS = ["Title", "User story", "Context", "Acceptance criteria", "States covered", "Screenshots",
                  "Tokens used", "Out of scope", "Open questions"]
@@ -335,6 +342,97 @@ def check_deliverable(raw, tokens, screens):
     return errs, warns
 
 
+REACT_PARTS = ["How to run", "Screens and components", "Tokens", "What this is not"]
+CODE_EXT = (".ts", ".tsx", ".js", ".jsx", ".css")
+TOKENS_PATH = None  # set from --tokens in main(); the React starter compares tokens.css verbatim
+
+
+def check_react(path, body, tokens, screens):
+    """The optional React starter (S3b). path is the manifest; the folder around it is the project."""
+    errs, warns = [], []
+    root = path.parent
+    if root.name != path.stem:
+        return [f"the manifest must sit in a folder with its own name ({path.stem}/{path.name})"], warns
+    errs += check_parts(body, REACT_PARTS, "React starter manifest")[0]
+    pkg = root / "package.json"
+    deps = {}
+    try:
+        pj = json.loads(pkg.read_text(encoding="utf-8"))
+        deps = {**pj.get("dependencies", {}), **pj.get("devDependencies", {})}
+        for d in ("react", "react-dom"):
+            if d not in pj.get("dependencies", {}):
+                errs.append(f"package.json: '{d}' missing from dependencies")
+        for d, v in deps.items():
+            if not re.fullmatch(r"\d+\.\d+\.\d+", str(v)):
+                errs.append(f"package.json: {d} '{v}' is not an exact version (pin it, no ^ or ~)")
+        if "build" not in pj.get("scripts", {}):
+            errs.append("package.json: no 'build' script")
+    except (OSError, ValueError) as e:
+        errs.append(f"package.json missing or unreadable ({e.__class__.__name__})")
+    tok_file = root / "src" / "tokens.css"
+    if not tok_file.is_file():
+        errs.append("src/tokens.css is missing (Harden's tokens.css, copied verbatim)")
+    elif TOKENS_PATH and str(TOKENS_PATH).endswith(".css"):
+        flat = lambda t: re.sub(r"\s+", "", t)  # noqa: E731
+        if flat(tok_file.read_text(encoding="utf-8")) != flat(Path(TOKENS_PATH).read_text(encoding="utf-8")):
+            errs.append("src/tokens.css differs from Harden's tokens.css (copy it verbatim)")
+    elif tokens is not None:
+        mine = load_tokens(tok_file)
+        for name, val in tokens.items():
+            if mine.get(name, "").lower() != str(val).strip().lower():
+                errs.append(f"src/tokens.css: --{name} is '{mine.get(name, 'missing')}', the design library says '{val}'")
+    files = [p for p in sorted((root / "src").rglob("*")) if p.suffix in CODE_EXT and p != tok_file
+             and "node_modules" not in p.parts] if (root / "src").is_dir() else []
+    if not files:
+        errs.append("no source files under src/")
+    for p in files:
+        rel = p.relative_to(root)
+        code = p.read_text(encoding="utf-8", errors="replace")
+        nocomment = re.sub(r"/\*.*?\*/", "", code, flags=re.S)
+        nocomment = re.sub(r"(?m)(^|[^:])//.*$", r"\1", nocomment)
+        if RAW_COLOUR.search(nocomment):
+            errs.append(f"{rel}: raw colour ({RAW_COLOUR.search(nocomment).group(0)}); use var(--token) from tokens.css")
+        if re.search(r"https?://", nocomment):
+            errs.append(f"{rel}: a URL in the code; the starter loads nothing from outside")
+        if re.search(r"\b(fetch|axios|XMLHttpRequest|WebSocket)\b", nocomment):
+            errs.append(f"{rel}: calls a network API; the starter uses sample data only (src/data/)")
+        if tokens is not None:
+            for v in sorted(set(re.findall(r"var\(--([a-z0-9-]+)", nocomment, re.I))):
+                if v not in tokens:
+                    errs.append(f"{rel}: var(--{v}) is not a token in the design library")
+        for imp in re.findall(r"""(?:\bfrom\s+|\bimport\s+)["']([^"'.][^"']*)["']""", nocomment):
+            pkg_name = "/".join(imp.split("/")[:2]) if imp.startswith("@") else imp.split("/")[0]
+            if deps and pkg_name not in deps:
+                errs.append(f"{rel}: imports '{imp}', which is not in package.json")
+    rows = {}
+    for line in sections(body).get("Screens and components", []):
+        c = [x.strip() for x in line.strip().strip("|").split("|")] if line.strip().startswith("|") else []
+        if len(c) >= 3 and c[0].isdigit():
+            rows[int(c[0])] = c[2].strip("` ")
+    if not rows:
+        errs.append("'Screens and components' has no rows (| Step | Screen | Component | Anchor |)")
+    comp_text = {}
+    for n, comp in rows.items():
+        cp = root / comp
+        if not cp.is_file():
+            errs.append(f"Step {n}: component file '{comp}' not found")
+            continue
+        comp_text[n] = cp.read_text(encoding="utf-8", errors="replace")
+        if not re.search(rf"koru-anchor:\s*#step-{n}\b", comp_text[n]):
+            errs.append(f"{comp}: needs a 'koru-anchor: #step-{n}' comment linking the deliverable's anchor")
+    if screens:
+        for n, states in html_labels(Path(screens).read_text(encoding="utf-8")):
+            if n not in rows:
+                errs.append(f"Step {n} from Harden's screens has no row in 'Screens and components'")
+            elif n in comp_text:
+                for st in states:
+                    if not re.search(rf"""["']{re.escape(slug(st))}["']""", comp_text[n]):
+                        errs.append(f"Step {n}: state '{st}' is not in {rows[n]} (as \"{slug(st)}\")")
+    if (root / "node_modules").is_dir():
+        warns.append("node_modules/ is present; it is never copied on sign-off")
+    return errs, warns
+
+
 def check_parts(body, parts, what):
     errs = []
     secs = sections(body)
@@ -370,6 +468,8 @@ def check(path, tokens, screens):
         words = sum(len(" ".join(secs.get(p, [])).split()) for p in NOTE_PARTS)
         if words > 350:
             warns.append(f"handoff note is {words} words across its four parts; half a page is about 250 to 300")
+    elif t == "react-starter":
+        errs, warns = check_react(Path(path), body, tokens, screens)
     elif t == "pr-readiness":
         errs, _ = check_parts(body, PR_PARTS, "PR readiness note")
     elif t == "user-story":
@@ -405,7 +505,8 @@ def collect(paths):
         p = Path(p)
         if p.is_dir():
             out += sorted(x for x in list(p.rglob("*.md")) + list(p.rglob("*.html"))
-                          if not {"templates", "superseded", "sources", "export", "export-preview"} & set(x.parts))
+                          if not {"templates", "superseded", "sources", "export", "export-preview"} & set(x.parts)
+                          and not in_code_folder(x))
         elif p.is_file():
             out.append(p)
         else:
@@ -477,6 +578,8 @@ def main():
     if not a.paths:
         ap.error("give files or folders to check, or --intake <engagement>")
 
+    global TOKENS_PATH
+    TOKENS_PATH = a.tokens
     tokens = load_tokens(a.tokens) if a.tokens else None
     bad, checked, texts, tickets = 0, 0, [], {}
     for f in collect(a.paths):

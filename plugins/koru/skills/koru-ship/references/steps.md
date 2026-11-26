@@ -6,6 +6,7 @@ Read the entry for the current step before running it. Each entry gives: who, mo
 - S1 Share the Harden handoff
 - S2 User stories (and S2 early)
 - S3 HTML deliverable
+- S3b React starter (optional)
 - S4 Tickets
 - S5 Handoff note and PR readiness note
 - S6 Agent pre-check
@@ -59,12 +60,27 @@ Read the entry for the current step before running it. Each entry gives: who, mo
 - **Run:** `lint_ship.py <file> --tokens <04-design-library>/tokens.css --screens <08-harden>/<screens>.html`. The `--screens` check fails if any step or state in Harden's screens is missing from the deliverable.
 - **Output:** `<project>-ship-deliverable-v<n>-draft.html` in `drafts/deliverable/`, and the walkthrough test source. **Checker:** the design lead opens the file in a browser, takes the tour and clicks every step and state; **confirms:** the design lead, after the new user's test. **Exit:** lints clean (the walkthrough check included); the new user's words recorded and each sticking point fixed or logged; checkpoint 2 logged.
 
+## S3b. React starter (optional, AI-led)
+
+- **When:** only if, at checkpoint 1, the engineer asks for a React starter and the client setup list says the client builds in React. Otherwise the team lead skips it (`step.py --skip-optional --by <name>`); the HTML deliverable is always the reference. Run it after checkpoint 2, so it copies a deliverable a new user has already tested.
+- **Who:** the design engineer runs the session with Claude and checks it.
+- **AI does:** copy `assets/templates/react-starter/` to `drafts/react/<project>-ship-react-starter-v<n>-draft/` and rename `manifest.md` to `<project>-ship-react-starter-v<n>-draft.md` (the manifest shares the folder's name; it is the artefact, the code is its content). Then:
+  - Paste Harden's `tokens.css` verbatim into `src/tokens.css`. Style only with `var(--token)`; never a raw colour.
+  - One component per screen in `src/screens/Step<N><Name>.tsx`, in journey order, registered in `src/screens/index.ts`. Each starts with `// koru-anchor: #step-N` and lists every state Harden defined in `states`, with the same ids as the deliverable's anchors (`ai-low-confidence`). Copy the structure, labels and copy text from the deliverable; do not redesign.
+  - The app shell (`App.tsx`) already gives the state switcher and the `#step-N-state-<id>` links, so tickets can link the deliverable and the starter with one anchor.
+  - Sample data only, in `src/data/`, with Harden's edge data. No API calls, no URLs, no packages beyond the template's pinned ones unless the engineer names one.
+  - Fill the manifest: how to run, one row per screen (`| Step | Screen | Component | Anchor |`), what this is not (and what the build team will change).
+- **Claude does not install packages.** The design engineer runs `npm install` and `npm run build` (Node 18 or later), records the result in "How to run", and clicks every step and state.
+- **Run:** `lint_ship.py <starter folder> --tokens <04-design-library>/tokens.css --screens <08-harden>/<screens>.html`.
+- **Output:** the starter folder. **Checker:** design engineer. **Exit:** lints clean; the build passes on the design engineer's machine; every state reachable. Sign-off promotes the whole folder to `07-ship/<...>-final/` (without `node_modules/` and `dist/`).
+
 ## S4. Tickets (AI-led)
 
 - **Who:** the design engineer runs the session with Claude; the design lead checks. The engineer reads them again at S7.
 - **AI does:** one ticket per user story, in `assets/templates/ticket.md`, following `references/tickets.md`. For each ticket:
   - Title (verb plus object), the story, context links (framed brief, Figma frame, the deliverable anchor), and the data and API it relies on as claim lines citing `feasibility` or `ship-notes`.
   - Acceptance criteria, one Given/When/Then per line, covering: the happy path; every state of every screen in the ticket (from `states`, including Partial for data from another system and No permission); every role permission (from `roles`: who can and cannot see, change, undo, approve, and what happens when the person who must act is away); AI behaviour (from the AI touchpoints block in `states`: what triggers it, what happens when the AI is wrong, who sees and fixes it, how it is undone, and the audit log line for accepted suggestions); edge cases (from `edge-cases`, including double submit, approver away with no delegate, session timeout and the target viewports); the system that owns each piece of data, its freshness and API failure (from `scope` and `feasibility`).
+  - If S3b ran, a Context line naming the starter component for each screen in the ticket (`src/screens/Step<N><Name>.tsx`).
   - States covered with their anchors; screenshots as anchors; tokens used (from `tokens.css`); out of scope; open questions as Q ids from the register.
   - Close the Ship notes: each Harden Ship note SN<n> is either closed in a ticket (an acceptance criterion or an out-of-scope line that names "Ship note SN<n>") or carried in the handoff note (S5).
 - A behaviour Harden did not define is not decided here: add an open question (asked of the design lead or engineer) and leave the criterion out until it is answered. If it changes what a user sees, send it back to Harden (`references/handoff.md`).
@@ -82,7 +98,7 @@ Read the entry for the current step before running it. Each entry gives: who, mo
 ## S6. Agent pre-check (AI-led)
 
 - **Who:** Claude launches the agent; the design engineer fixes; the design lead checks the resolutions.
-- **AI does:** launch the plugin agent `handoff-reviewer` (`plugins/koru/agents/handoff-reviewer.md`). Give it only the Ship drafts (tickets, deliverable, handoff note, PR readiness note) and the design library (`04-design-library/`). It reads them cold and lists every question an engineer would ask, ending with "Buildable without questions: n of N". If the agent is not installed, launch a general subagent with the brief in `references/handoff.md` ("The cold read brief"), and say so.
+- **AI does:** launch the plugin agent `handoff-reviewer` (`plugins/koru/agents/handoff-reviewer.md`). Give it only the Ship drafts (tickets, deliverable, handoff note, PR readiness note, and the React starter's manifest and `src/` if S3b ran) and the design library (`04-design-library/`). It reads them cold and lists every question an engineer would ask, ending with "Buildable without questions: n of N". If the agent is not installed, launch a general subagent with the brief in `references/handoff.md` ("The cold read brief"), and say so.
 - Record the result verbatim in `assets/templates/review.md` (reviewer: `handoff-reviewer agent`). Then, with the design engineer, resolve every row: **fixed** (a new version of the ticket, note or deliverable; say which) or **logged** (an open question with an owner). Never mark a row resolved without one of these. Log what the agent caught that the AI drafts missed in the AI quality log (category `missed` usually).
 - **Output:** `<project>-ship-review-agent-v1-draft.md` in `drafts/review/`, plus new versions. **Checker:** design lead. **Exit:** every row has a resolution; re-run the agent if more than a third of tickets were not buildable, and log the second score.
 

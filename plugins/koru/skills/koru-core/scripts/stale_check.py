@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from _common import front, parse_name, table_rows  # noqa: E402
+from _common import front, in_code_folder, parse_name, table_rows  # noqa: E402
 
 STAGE_RANK = {"frame": 1, "explore": 2, "harden": 3, "ship": 4}
 TYPE_RANK = {"source": 0, "insight": 1, "persona": 2, "workflow": 2, "jtbd": 2, "competitive-scan": 2,
@@ -99,12 +99,12 @@ def main():
 
     for p in sorted(eng.rglob("*.md")):
         if p.name.startswith(("00-", "05-")) or p.name in SKIP_NAMES or "templates" in p.parts \
-                or ".koru" in p.parts or "handoff-cards" in p.parts:
+                or ".koru" in p.parts or "handoff-cards" in p.parts or in_code_folder(p):
             continue
         add(p, True, superseded="superseded" in p.parts)
     for p in sorted(eng.rglob("*.html")):
         parts = p.parts
-        if "templates" in parts or ".koru" in parts:
+        if "templates" in parts or ".koru" in parts or in_code_folder(p):
             continue
         add(p, "sources" not in parts, superseded="superseded" in parts)  # HTML artefacts (wireframes) count as derived; HTML in sources/ is a source
     for kb in a.kb:

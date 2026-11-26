@@ -11,11 +11,17 @@ Checks, then acts:
 Then: logs "<name> signed off" in 05-decisions-log.md, writes a copy named ...-final with status: final into the
 stage's final folder (the draft stays where it is, untouched), rebuilds the artefact registry, and prints what the
 context keeper should now upload. Exit 1 if refused.
+
+A code artefact (Ship's React starter) is a folder whose manifest shares its name:
+<project>-ship-react-starter-v1-draft/<project>-ship-react-starter-v1-draft.md. Sign off by passing the manifest
+as --file: the checks run on the manifest (plus no TODO left in the code), and the whole folder is copied to
+<final folder>/<...-final>/, without node_modules/ and dist/, with the manifest renamed and set to final.
 """
 import argparse
 import datetime
 import json
 import re
+import shutil
 import sys
 from pathlib import Path
 
@@ -81,6 +87,13 @@ def main():
 
     body = re.sub(r"^(\s*<!--\s*\n)?---\n.*?\n---\s*\n(-->\s*\n?)?", "", text, count=1, flags=re.S)
     left = re.findall(r"\bTODO\b|\bTBD\b", body) + ([] if src.suffix == ".html" else re.findall(r"<[a-z][^>\n]{1,60}>", body))
+    code_dir = src.parent if src.parent.name == src.stem else None
+    if code_dir:
+        for p in code_dir.rglob("*"):
+            if p.is_file() and not ({"node_modules", "dist"} & set(p.relative_to(code_dir).parts)) and p != src \
+                    and p.suffix in (".ts", ".tsx", ".js", ".jsx", ".css", ".html", ".json", ".md"):
+                if re.search(r"\bTODO\b", p.read_text(encoding="utf-8", errors="replace")):
+                    left.append(f"TODO in {p.relative_to(code_dir)}")
     if re.search(r"^owner:\s*(TODO|$)", text, re.M):
         left.append("owner: TODO")
     if left:
@@ -94,7 +107,9 @@ def main():
     if skill:
         homes.update((k.load_json(skill / "stage.json", {}) or {}).get("final_homes", {}))
     home = homes.get(typ) or (finals[-1] if stage in ("frame", "harden") and len(finals) > 1 else (finals[0] if finals else ""))
-    dest = eng / home / (final_stem + src.suffix)
+    dest = eng / home / final_stem / (final_stem + src.suffix) if code_dir else eng / home / (final_stem + src.suffix)
+    if code_dir and dest.parent.exists():
+        problems.append(f"{dest.parent.relative_to(eng)} already exists (finals are never overwritten; make the next version)")
     if dest.exists():
         problems.append(f"{dest.relative_to(eng)} already exists (finals are never overwritten; make the next version)")
 
@@ -113,6 +128,8 @@ def main():
     out = re.sub(r"^last_checked:.*$", f"last_checked: {today}", out, count=1, flags=re.M)
     with (eng / "05-decisions-log.md").open("a", encoding="utf-8") as f:
         f.write(f"| {today} | {stage} | {final_stem} signed off{' as ' + a.role if a.role else ''} | {final_stem} | {a.by} | Another review round |\n")
+    if code_dir:
+        shutil.copytree(code_dir, dest.parent, ignore=shutil.ignore_patterns("node_modules", "dist", src.name))
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(out, encoding="utf-8")
     k.run_core(core, "build_registry.py", "--engagement", eng)

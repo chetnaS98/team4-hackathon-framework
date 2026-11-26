@@ -1,6 +1,6 @@
 ---
 name: koru-ship
-description: Guides a Koru team through Ship (stage 4 of Frame, Explore, Harden, Ship), from Harden's final hardened design to engineers with no handover gap. Claude drafts; named people decide at three checkpoints - design lead and engineer agree the user stories before anything is built, someone new to the flow runs the deliverable's guided walkthrough and the design lead confirms it, and the engineer reviews and signs the handoff. Outputs a clickable HTML deliverable with an Intro.js walkthrough of its features and interactions, 3 to 5 tickets with acceptance criteria, a handoff note, a PR readiness note, an agent cold read, and tickets as a Jira CSV and markdown (no Jira access needed). Works with koru-core. Use when someone starts or resumes Ship, refers to the Harden handoff, or asks for user stories, tickets, the HTML deliverable, a product walkthrough or tour, the handoff note, an engineer review, or a ticket export, even without naming the skill.
+description: Guides a Koru team through Ship (stage 4 of Frame, Explore, Harden, Ship), from Harden's final hardened design to engineers with no handover gap. Claude drafts; named people decide at three checkpoints - design lead and engineer agree the user stories before anything is built, someone new to the flow runs the deliverable's guided walkthrough and the design lead confirms it, and the engineer reviews and signs the handoff. Outputs a clickable HTML deliverable with an Intro.js walkthrough of its features and interactions, 3 to 5 tickets with acceptance criteria, an optional React starter, a handoff note, a PR readiness note, an agent cold read, and tickets as a Jira CSV and markdown (no Jira access needed). Works with koru-core. Use when someone starts or resumes Ship, refers to the Harden handoff, or asks for user stories, tickets, the HTML deliverable, React components, a product walkthrough or tour, the handoff note, an engineer review, or a ticket export, even without naming the skill.
 ---
 
 # Koru Ship: the Ship phase
@@ -43,6 +43,7 @@ The shared rules are in core. These apply in Ship.
 - **Never fabricate screenshots, ticket keys, issue numbers or an engineer's words.** Screenshots are anchors; a person captures image files if they are needed. The engineer's review enters verbatim as a source.
 - **Nothing leaves without a yes.** Only `final` tickets get the `koru-final` label. Importing into Jira is done by a person. `export_tickets.py --github` is a dry run; pass `--yes` only after the user says yes in chat to that exact list (it publishes outside the team).
 - **No pull request.** It is out of scope. Write the `pr-readiness` note instead.
+- **The React starter is optional and is a reference, not production code.** Run S3b only when the engineer asks for it and the client builds in React. One component per screen, the deliverable's anchors and states, Harden's `tokens.css` verbatim, sample data only, no API calls. The deliverable stays the reference: if the two disagree, the deliverable wins. Claude never installs packages; the design engineer builds it and records the result.
 - **People decide, Claude drafts.** Claude never confirms a checkpoint, never answers as the new user or the engineer, and never marks a walkthrough test passed. A walkthrough test with nobody new to the flow is not done: ask for a name from the checker pool or an organiser.
 - **The walkthrough explains, it does not sell.** Every tour step describes something the deliverable really does, using the labels on screen. No tour step for an add-on or for behaviour Harden did not define.
 - **Intro.js is the one external script allowed**, pinned to the version in the template and loaded from cdnjs. If it does not load (offline), the deliverable still works and the "Take the tour" button hides itself. Intro.js is AGPL-3.0 or paid commercial licence: the design lead confirms the licence position before the deliverable goes to a client (open question in `client-setup.md`).
@@ -74,6 +75,7 @@ End every reply that reaches a checkpoint (S2, S3, S7) with a clear question to 
 | S1 | Design lead | Share the Harden handoff; Claude reads everything and confirms back in 3 lines | Human-led | Intake check, tracker row | The person sharing |
 | S2 | Claude, then Design lead + Engineer | User stories: 3 to 5, one flow. **Checkpoint 1:** the design lead and the engineer agree them | AI-assisted, checkpoint | `user-story` | Design lead and engineer confirm |
 | S3 | Claude + Design engineer, then a new user + Design lead | HTML deliverable of the core flow with the Intro.js walkthrough. **Checkpoint 2:** a person new to the flow runs the walkthrough and clicks every state; the design lead confirms | AI-led, checkpoint | `deliverable` (.html), walkthrough test source | New user (their words), design lead confirms |
+| S3b | Claude + Design engineer | **Optional:** React starter of the core flow (one component per screen, same anchors, states and tokens) | AI-led | `react-starter` (a folder) | Design engineer |
 | S4 | Claude + Design engineer | Tickets, one per story | AI-led | `ticket` x 3 to 5 | Design lead |
 | S5 | Claude + Design lead | Handoff note and PR readiness note | AI-led | `handoff-note`, `pr-readiness` | Design engineer |
 | S6 | Claude (agent), then Design engineer | Agent pre-check: cold read by `handoff-reviewer` | AI-led | `review` (agent) | Design lead |
@@ -108,6 +110,7 @@ All `final`, read at S1: the `hardened-design` artefact and everything it links 
 |---|---|---|---|
 | `user-story` | S2 | `<project>-ship-user-story-v1-draft.md` | `07-ship/` |
 | `deliverable` | S3 | `<project>-ship-deliverable-v1-draft.html` | `07-ship/` |
+| `react-starter` | S3b (optional) | folder `<project>-ship-react-starter-v1-draft/` holding the manifest `<same name>.md` and the code | `07-ship/<...>-final/` (sign-off copies the folder) |
 | `ticket` | S4 | `<project>-ship-ticket-<nn>-<slug>-v1-draft.md` | `07-ship/`, then Jira or GitHub with `koru-final` |
 | `handoff-note` | S5 | `<project>-ship-handoff-note-v1-draft.md` | `07-ship/` |
 | `pr-readiness` | S5 | `<project>-ship-pr-readiness-v1-draft.md` | `07-ship/` |
@@ -130,6 +133,7 @@ Read these when you reach the relevant moment. Shared references are in `koru-co
 | `references/handoff.md` | S5 to S9: the handoff note, PR readiness, the cold read brief, the engineer review, the handoff card, send-back to Harden |
 | `references/client-setup.md` | Once per new client: the one-time setup checklist |
 | `references/walkthrough.md` | S3: building the Intro.js walkthrough, and checkpoint 2 (the walkthrough test) |
+| `assets/templates/react-starter/` | S3b: the Vite, React 18 and TypeScript starter (pinned versions), the app shell with the state switcher, an example screen, the manifest |
 | `references/core-additions.md` | Once, when Ship first runs in an engagement whose core has no Ship rows |
 | `stage.json` | Read by core's `init_stage.py` |
 | `assets/templates/` | Starting point for every Ship artefact type |

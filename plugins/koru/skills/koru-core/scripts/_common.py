@@ -68,3 +68,20 @@ def table_rows(text, heading_re=None):
         elif in_table:
             break
     return rows
+
+
+CODE_DIR_RE = re.compile(r"-react-starter-v\d+-(draft|review|final)$")
+
+
+def in_code_folder(p):
+    """True for a file inside node_modules or inside a code artefact folder (a Ship React starter,
+    <project>-ship-react-starter-v<n>-<status>/), except that folder's manifest, which shares the
+    folder's name (<folder>/<folder>.md). The manifest is the artefact; the code is its content."""
+    p = Path(p)
+    if "node_modules" in p.parts:
+        return True
+    for d in p.parents:
+        if CODE_DIR_RE.search(d.name):
+            return not (p.parent == d and p.stem == d.name)
+    return False
+

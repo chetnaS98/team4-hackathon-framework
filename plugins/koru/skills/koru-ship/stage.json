@@ -7,6 +7,7 @@
   "types": [
     "user-story",
     "deliverable",
+    "react-starter",
     "ticket",
     "handoff-note",
     "pr-readiness",
@@ -21,6 +22,7 @@
   "draft_folders": [
     "stories",
     "deliverable",
+    "react",
     "tickets",
     "handoff",
     "review"
@@ -39,7 +41,12 @@
     "must_be_able_to_do": "Build the core flow from the tickets, the HTML deliverable and the tokens without coming back to the design team: every ticket has acceptance criteria for every state, role permission, AI behaviour and edge case it covers, every Harden Ship note is closed or carried, every remaining question has an owner, and the engineer's review questions are answered or listed",
     "does_not_include": "Production code, a pull request or merged changes, journey tests running in CI, flows other than the core flow, anything a ticket lists as out of scope, and screenshot image files (tickets link to the deliverable's anchors instead)"
   },
-  "optional_steps": {},
+  "optional_steps": {
+    "S3b": {
+      "skip_reason": "The build team doesn't use React, or didn't ask for a starter; the HTML deliverable is the reference",
+      "run_when": "At checkpoint 1 the engineer asks for a React starter, and the client setup list says the client builds in React"
+    }
+  },
   "versioned_handoff": true,
   "iteration_restart_step": "S3"
 }

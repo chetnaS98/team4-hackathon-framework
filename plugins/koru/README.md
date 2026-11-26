@@ -25,7 +25,7 @@ Or from GitHub: `/plugin install koru --marketplace chetnaS98/team4-hackathon-fr
 ## How it fits together
 
 - **koru-core** (skill): the shared rules, file naming, logs, registers, roles gate and stale-check. Every stage skill loads it first.
-- **Stage skills**: `koru-frame` (framed brief and research pack), `koru-explore` (directions, two ideas, Design v1), `koru-harden` (states, roles, edge cases, accessibility, feasibility, rulebook checks), `koru-ship` (HTML deliverable with a guided walkthrough, tickets, handoff note).
+- **Stage skills**: `koru-frame` (framed brief and research pack), `koru-explore` (directions, two ideas, Design v1), `koru-harden` (states, roles, edge cases, accessibility, feasibility, rulebook checks), `koru-ship` (HTML deliverable with a guided walkthrough, an optional React starter, tickets, handoff note).
 - **Reviewer agents** (fresh context, read-only or own report only): `evidence-auditor` (Frame 5 and 7), `feasibility-engineer` (Harden H3, a pre-check before the real engineer), `hardening-critic` (Harden after H7), `handoff-reviewer` (Ship, cold read before the engineer).
 - **Scripts** (`scripts/`): `route.py` decides the next action; `intake.py` sets a project up; `step.py` records step status (a pass needs a named checker); `signoff.py` promotes a draft to final after the checks; `advance_stage.py` hands a stage on; `log.py` writes the break and playbook-change logs.
 - **Hooks**: a guard blocks editing sources, overwriting finals and putting unsigned files in final folders; a session-start hook shows the engagement's status; an agent hook keeps reviewer agents in the foreground and, when one reports, tells the session to fold the findings in and record progress. If an agent is launched in the background anyway, the hook says it has not reported yet, so the session records the step as waiting instead of moving on.
@@ -33,6 +33,7 @@ Or from GitHub: `/plugin install koru --marketplace chetnaS98/team4-hackathon-fr
 - **Optional steps**: each stage's `stage.json` lists them with a default skip reason (Frame 8, 9, 10, 11, 14b, 20; Explore A6, A15; Harden H13). `route.py` says `OPTIONAL` and the team lead decides; `step.py --skip-optional --by <name> [--keep 14b]` skips them in one go. Other steps can only be skipped as a logged override.
 - **Ship checkpoints**: Ship has three hard stops where people decide, not Claude. S2: the design lead and the engineer agree the 3 to 5 user stories before anything is built. S3: someone new to the flow takes the deliverable's walkthrough, their words are recorded as a source, and the design lead confirms. S7: the named engineer reviews and signs the handoff.
 - **Guided walkthrough (Intro.js)**: the Ship HTML deliverable carries an Intro.js tour of its features and interactions for a new user (a "Take the tour" button; steps kept as JSON in the page). Intro.js 7.2.0 from cdnjs is the one external script allowed; if it can't load, the button hides and the page still works. `lint_ship.py` checks every tour step points at a real element. Intro.js is AGPL or paid commercial, so the design lead confirms the licence per client (`koru-ship/references/client-setup.md`); how to write the tour is in `koru-ship/references/walkthrough.md`.
+- **React starter (optional, S3b)**: when the engineer asks for it and the client builds in React, Ship also makes a small Vite + React 18 + TypeScript project of the core flow: one component per screen, the deliverable's anchors and states, Harden's `tokens.css` verbatim, sample data only. It is a reference, not production code; the HTML deliverable stays the reference. `lint_ship.py` checks it, Claude never installs packages (the design engineer runs `npm install` and `npm run build`), and sign-off promotes the whole folder to `07-ship/` without `node_modules/`.
 - **Ship iterations**: each handoff to the build team is an iteration with its own card (`<project>-ship-handoff-card-v1.md`, `-v2.md`, ...) and export folder (`07-ship/export/iteration-<n>/`). `iteration.py --by <name> --reason <feedback>` starts the next round after a handoff; from round 2 the handoff note needs a "What changed since iteration n" section. Nothing earlier is overwritten.
 
 ## Site map
@@ -64,7 +65,7 @@ plugins/koru/
 │   ├── route.py                     decides the next action (NEW, START, DISPATCH, CHECK, OPTIONAL, HANDOFF ...)
 │   ├── intake.py                    sets a project up from the intake answers
 │   ├── step.py                      records step status, notes, waiting-on, skips (a pass needs a named checker)
-│   ├── signoff.py                   promotes a draft to final after the checks
+│   ├── signoff.py                   promotes a draft to final after the checks (a starter folder as a whole)
 │   ├── advance_stage.py             hands a finished stage on to the next
 │   ├── iteration.py                 starts the next Ship round (handoff v2, v3 ...)
 │   ├── log.py                       writes the break and playbook-change logs
@@ -91,11 +92,12 @@ plugins/koru/
     │   ├── references/              steps, artefacts, rulebook, design library, review, handoff ...
     │   ├── assets/                  templates and the step tracker
     │   └── scripts/                 lint_harden, contrast_check, export_tokens
-    └── koru-ship/                   stage 4: HTML deliverable with walkthrough, tickets, handoff (S1 to S9)
+    └── koru-ship/                   stage 4: HTML deliverable with walkthrough, optional React starter,
+        │                            tickets, handoff (S1 to S9, plus optional S3b)
         ├── SKILL.md, stage.json
         ├── references/              steps, tickets, handoff, client setup, walkthrough (Intro.js)
-        ├── assets/                  deliverable.html, ticket and handoff templates, step tracker
-        └── scripts/                 lint_ship (incl. the tour check), export_tickets (Jira CSV + markdown)
+        ├── assets/                  deliverable.html, react-starter/, ticket and handoff templates, step tracker
+        └── scripts/                 lint_ship (tour and React checks), export_tickets (Jira CSV + markdown)
 ```
 
 ## Where things live (inside an engagement folder)
