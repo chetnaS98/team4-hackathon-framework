@@ -18,27 +18,25 @@ built as Claude Code skills plus small deterministic scripts. People review befo
 ## Site map
 
 ```mermaid
-flowchart LR
-  repo["team4-hackathon-framework"]
-  repo --> mkt[".claude-plugin/<br/>marketplace.json"]
-  repo --> onb["ONBOARDING.md"]
-  repo --> fw["framework/<br/>Frame pipeline scripts"]
-  repo --> ex["examples/deskly/<br/>made-up test project"]
-  repo --> rs[".claude/skills/<br/>research formatter,<br/>frame-clean-synthesise"]
-  repo --> plug["plugins/koru/<br/>the koru plugin"]
+flowchart TD
+  repo["<b>team4-hackathon-framework</b>"]
+  repo --> plug["<b>plugins/koru/</b><br/>the koru plugin"]
+  repo --> fw["framework/<br/>Frame pipeline"]
+  repo --> ex["examples/<br/>test data"]
+  repo --> rs[".claude/skills/<br/>research tools"]
+  repo --> onb["ONBOARDING.md<br/>marketplace.json"]
 
-  plug --> cmd["commands/<br/>next · status · break · change"]
-  plug --> ag["agents/<br/>evidence-auditor · feasibility-engineer<br/>hardening-critic · handoff-reviewer"]
-  plug --> hk["hooks/<br/>guard · session_start · agent_done"]
-  plug --> sc["scripts/<br/>route · intake · step · signoff<br/>advance_stage · iteration · log"]
-  plug --> docs["docs/koru-flow.html"]
+  plug --> cmd["commands/<br/>/koru:next etc."]
+  plug --> ag["agents/<br/>4 reviewers"]
+  plug --> hk["hooks/<br/>guards"]
+  plug --> sc["scripts/<br/>route, step, signoff"]
   plug --> sk["skills/"]
 
-  sk --> core["koru-core<br/>rules · naming · logs · registers<br/>roles gate · stale-check"]
-  sk --> fr["koru-frame<br/>framed brief · research pack"]
-  sk --> exp["koru-explore<br/>two ideas · Design v1"]
-  sk --> hd["koru-harden<br/>states · roles · edge cases<br/>accessibility · tokens · rulebook"]
-  sk --> sh["koru-ship<br/>HTML + Intro.js walkthrough<br/>tickets · handoff"]
+  sk --> core["koru-core<br/>shared rules"]
+  sk --> fr["koru-frame<br/>brief, research"]
+  sk --> exp["koru-explore<br/>Design v1"]
+  sk --> hd["koru-harden<br/>states, tokens"]
+  sk --> sh["koru-ship<br/>HTML, tickets"]
 
   fr -.-> exp -.-> hd -.-> sh
 ```
