@@ -6,11 +6,11 @@ This repo holds our Koru delivery playbook as one Claude Code plugin, **koru**. 
 
 You need Claude Code (desktop app Code tab, or the `claude` CLI) and Python 3.9+.
 
-1. Get the repo and the plugin branch:
+1. Get the repo and the release branch (`release/koru-v0.1.0` is the version to use; new versions get a new release branch):
    ```bash
    git clone https://github.com/chetnaS98/team4-hackathon-framework.git
    cd team4-hackathon-framework
-   git checkout koru/meridian-frame-setup
+   git checkout release/koru-v0.1.0
    ```
 2. Open Claude Code in that folder and run:
    ```
