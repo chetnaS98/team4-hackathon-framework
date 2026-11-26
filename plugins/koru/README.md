@@ -35,6 +35,69 @@ Or from GitHub: `/plugin install koru --marketplace chetnaS98/team4-hackathon-fr
 - **Guided walkthrough (Intro.js)**: the Ship HTML deliverable carries an Intro.js tour of its features and interactions for a new user (a "Take the tour" button; steps kept as JSON in the page). Intro.js 7.2.0 from cdnjs is the one external script allowed; if it can't load, the button hides and the page still works. `lint_ship.py` checks every tour step points at a real element. Intro.js is AGPL or paid commercial, so the design lead confirms the licence per client (`koru-ship/references/client-setup.md`); how to write the tour is in `koru-ship/references/walkthrough.md`.
 - **Ship iterations**: each handoff to the build team is an iteration with its own card (`<project>-ship-handoff-card-v1.md`, `-v2.md`, ...) and export folder (`07-ship/export/iteration-<n>/`). `iteration.py --by <name> --reason <feedback>` starts the next round after a handoff; from round 2 the handoff note needs a "What changed since iteration n" section. Nothing earlier is overwritten.
 
+## Site map
+
+What's in the plugin, and where to look for each thing.
+
+```
+.claude-plugin/marketplace.json      (repo root) makes this repo the team4-koru marketplace
+plugins/koru/
+├── .claude-plugin/plugin.json       plugin name, version, description
+├── README.md                        this file
+├── docs/koru-flow.html              the whole flow on one page, stage by stage
+├── commands/                        what you type
+│   ├── next.md                      /koru:next   intake the first time, then the next step
+│   ├── status.md                    /koru:status where things stand, changes nothing
+│   ├── break.md                     /koru:break  log something that broke
+│   └── change.md                    /koru:change log a change to the playbook
+├── agents/                          independent reviewers; they report, people decide
+│   ├── evidence-auditor.md          Frame steps 5 and 7
+│   ├── feasibility-engineer.md      Harden H3, before the real engineer
+│   ├── hardening-critic.md          Harden, after H7
+│   └── handoff-reviewer.md          Ship S6, cold read before the engineer
+├── hooks/                           run automatically
+│   ├── hooks.json                   wires the hooks to Claude Code events
+│   ├── guard.py                     blocks editing sources, overwriting finals, unsigned files in final folders
+│   ├── session_start.py             shows the engagement's status when a session opens
+│   └── agent_done.py                keeps reviewer agents in the foreground; folds their findings in
+├── scripts/                         the rules that must hold every time
+│   ├── route.py                     decides the next action (NEW, START, DISPATCH, CHECK, OPTIONAL, HANDOFF ...)
+│   ├── intake.py                    sets a project up from the intake answers
+│   ├── step.py                      records step status, notes, waiting-on, skips (a pass needs a named checker)
+│   ├── signoff.py                   promotes a draft to final after the checks
+│   ├── advance_stage.py             hands a finished stage on to the next
+│   ├── iteration.py                 starts the next Ship round (handoff v2, v3 ...)
+│   ├── log.py                       writes the break and playbook-change logs
+│   └── _koru.py                     shared helpers
+└── skills/
+    ├── koru-core/                   shared by every stage: rules, naming, logs, registers, roles
+    │   ├── SKILL.md
+    │   ├── references/              file protocol, governance, integrity, registers, defaults ...
+    │   ├── assets/templates/        read-me, logs, registers, handoff card shell
+    │   ├── registry/roles.json      the roles every stage needs
+    │   └── scripts/                 init_engagement, init_stage, check_roles, lint_core,
+    │                                lint_lines, stale_check, build_registry
+    ├── koru-frame/                  stage 1: framed brief and research pack (24 steps)
+    │   ├── SKILL.md, stage.json
+    │   ├── references/              steps, TRACES handbook, brief, paths, file specs, handoff ...
+    │   └── assets/                  templates and the step tracker
+    ├── koru-explore/                stage 2: directions, two ideas, concept tests, Design v1
+    │   ├── SKILL.md, stage.json
+    │   ├── references/, assets/
+    │   └── scripts/export_frame.py  reads the Frame export
+    ├── koru-harden/                 stage 3: states, roles, edge cases, accessibility, feasibility,
+    │   │                            tokens, rulebook checks (H1 to H19)
+    │   ├── SKILL.md, stage.json
+    │   ├── references/              steps, artefacts, rulebook, design library, review, handoff ...
+    │   ├── assets/                  templates and the step tracker
+    │   └── scripts/                 lint_harden, contrast_check, export_tokens
+    └── koru-ship/                   stage 4: HTML deliverable with walkthrough, tickets, handoff (S1 to S9)
+        ├── SKILL.md, stage.json
+        ├── references/              steps, tickets, handoff, client setup, walkthrough (Intro.js)
+        ├── assets/                  deliverable.html, ticket and handoff templates, step tracker
+        └── scripts/                 lint_ship (incl. the tour check), export_tickets (Jira CSV + markdown)
+```
+
 ## Where things live (inside an engagement folder)
 
 `00-read-me-first.md` (project, roles, stage table, step trackers) · `01-framed-brief/` `02-research/` (Frame finals) · `03-rulebook/` `04-design-library/` `08-harden/` (Harden finals) · `06-explore/` (Explore finals) · `07-ship/` (Ship finals) · `05-decisions-log.md`, `ai-quality-log.md`, `break-log.md`, `playbook-changes.md` · registers · `handoff-cards/` · `stages/<stage>/drafts/` and `stages/<stage>/sources/`.
