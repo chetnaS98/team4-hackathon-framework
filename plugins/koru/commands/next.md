@@ -60,7 +60,7 @@ Then:
 
 - Step status: `step.py --engagement <e> --step <id> --status drafted|in check|passed|skipped [--checker "<name>"] [--waiting-on "<name>"] [--note "<one line>"] [--by "<name>"] [--reason "<why>"]`. `passed` needs a named checker. `skipped` needs `--by` (who decided); optional steps carry a default reason, any other step also needs `--reason` and `--override` and is logged as an override.
 - **Record progress at every pause inside a step** with `--note` (for example `--status drafted --note "evidence-auditor running"`, then `--status "in check" --waiting-on Sanvika --note "audit folded into traces v2; lint and stale-check clean"`). Route shows the note, so the next turn, or a new session, knows exactly what is done.
-- **Reviewer agents run in the foreground**, never in the background (a hook refuses a background launch). Their report comes back as the tool result in the same turn: fold it in and carry on with the step. Never tell the user to talk to the agent; nothing said to an agent counts as a decision.
+- **Reviewer agents:** launch them without `run_in_background` (a hook refuses it). If the app still runs one in the background, record `--status drafted --note "<agent> running"`, tell the user in one line that the step continues when it reports, and stop. When its report arrives, carry on with the same step in that turn. Never tell the user to talk to the agent; nothing said to an agent counts as a decision.
 - Sign-off and promote to final: `signoff.py --engagement <e> --file <draft> --by "<name>" [--role <role>]`. It refuses while the stale-check flags the artefact.
 - Breaks and playbook changes: `/koru:break`, `/koru:change`.
 - Status only: `/koru:status`.

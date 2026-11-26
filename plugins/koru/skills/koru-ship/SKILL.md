@@ -1,6 +1,6 @@
 ---
 name: koru-ship
-description: Guides a Koru team through the Ship stage (stage 4 of Frame, Explore, Harden, Ship), taking Harden's final hardened design and tokens file and getting it to engineers with no handover gap - an HTML deliverable of the core flow, 3 to 5 tickets in the team template with acceptance criteria, a half-page handoff note, a note on what a pull request would take, an agent cold read, an engineer's review and ticket delivery without Jira access (a Jira CSV import file, markdown, optional GitHub Issues). Works together with koru-core, which holds the shared rules, logs, naming, registers and integrity checks. Use this whenever someone says they are starting Ship, refers to the Harden handoff or the hardened design, or asks for user stories, tickets, acceptance criteria, the HTML deliverable, the handoff note, pull-request readiness, an engineer review, exporting tickets to Jira or GitHub, or closing the engagement, even if they do not name the skill. Also use it to resume a Ship stage in progress, or to draft user stories early while Explore and Harden are still running.
+description: Guides a Koru team through Ship (stage 4 of Frame, Explore, Harden, Ship), from Harden's final hardened design to engineers with no handover gap. Claude drafts; named people decide at three checkpoints - design lead and engineer agree the user stories before anything is built, someone new to the flow runs the deliverable's guided walkthrough and the design lead confirms it, and the engineer reviews and signs the handoff. Outputs a clickable HTML deliverable with an Intro.js walkthrough of its features and interactions, 3 to 5 tickets with acceptance criteria, a handoff note, a PR readiness note, an agent cold read, and tickets as a Jira CSV and markdown (no Jira access needed). Works with koru-core. Use when someone starts or resumes Ship, refers to the Harden handoff, or asks for user stories, tickets, the HTML deliverable, a product walkthrough or tour, the handoff note, an engineer review, or a ticket export, even without naming the skill.
 ---
 
 # Koru Ship: the Ship phase
@@ -13,11 +13,13 @@ Ship gets an approved design to engineers with no handover gap: the design deliv
 
 ## At a glance (for the team's write-up)
 
-1. AI turns Harden's hardened screens and tokens into one clickable HTML deliverable of the core flow, with a stable link for every step and state. **Checks: design lead** (clicks through every state).
-2. AI drafts 3 to 5 user stories (it can start early, as drafts) and one ticket per story in the team template, with acceptance criteria for every state, role, AI behaviour and edge case. **Checks: design lead.**
-3. AI writes the half-page handoff note and a short note on what a pull request would take. **Checks: design engineer.**
-4. An agent reads the handoff cold and lists every question an engineer would still ask; then a named engineer reviews it and lists what they'd still need. **Checks and signs: engineer.**
-5. A script exports the final tickets as a Jira CSV import file and markdown (GitHub Issues only after a yes). **Confirms: engineer.**
+Claude drafts everything; people decide at three **checkpoints** (hard stops) and check every other step.
+
+1. AI drafts 3 to 5 user stories (it can start early, as drafts). **Checkpoint 1: the design lead and the engineer agree the stories are what will be built**, before anything is drawn.
+2. AI turns Harden's hardened screens and tokens into one clickable HTML deliverable of the core flow, with a stable link for every step and state and an **Intro.js guided walkthrough** that shows a new user each feature and interaction. **Checkpoint 2: someone who has not seen the flow runs the walkthrough and clicks through every state; their words are recorded; the design lead confirms.**
+3. AI writes one ticket per story with acceptance criteria for every state, role, AI behaviour and edge case (**checks: design lead**), then the half-page handoff note and a note on what a pull request would take (**checks: design engineer**).
+4. An agent reads the handoff cold and lists every question an engineer would still ask (**the design engineer decides each fix**). **Checkpoint 3: a named engineer reviews the handoff, lists what they'd still need, and signs.**
+5. A script exports the final tickets as a Jira CSV import file and markdown; **a person imports them** (GitHub Issues only after a yes). **Confirms: engineer.**
 
 ## Terms
 
@@ -25,7 +27,8 @@ Ship gets an approved design to engineers with no handover gap: the design deliv
 - **The hardened design** is Harden's final `hardened-design` artefact and everything it links (screens HTML, tokens with `tokens.css` and `tokens.json`, scope, states, roles, edge cases, accessibility, feasibility, rulebook check, checklist, Ship notes).
 - **Ship note SN<n>** is a note Harden handed on (`SN1`, `SN2`, ...). Steps in this skill are `S1` to `S9`; the different prefix keeps them apart.
 - **Anchor**: a stable link into the deliverable, `#step-N` for a step and `#step-N-state-<state>` for a state (state in lower case, spaces as hyphens: `#step-2-state-ai-low-confidence`).
-- **Checkpoint**: S7. Core's checkpoint rule applies.
+- **Checkpoint**: S2 (stories agreed), S3 (walkthrough test) and S7 (engineer review). Core's checkpoint rule applies: never start the next step before the named person confirms, and log the confirmation.
+- **Walkthrough**: the Intro.js guided tour inside the deliverable. It shows a new user each screen, each feature and each interaction (what to click, what happens, how to undo), in plain words.
 
 ## Ship-only rules
 
@@ -40,6 +43,9 @@ The shared rules are in core. These apply in Ship.
 - **Never fabricate screenshots, ticket keys, issue numbers or an engineer's words.** Screenshots are anchors; a person captures image files if they are needed. The engineer's review enters verbatim as a source.
 - **Nothing leaves without a yes.** Only `final` tickets get the `koru-final` label. Importing into Jira is done by a person. `export_tickets.py --github` is a dry run; pass `--yes` only after the user says yes in chat to that exact list (it publishes outside the team).
 - **No pull request.** It is out of scope. Write the `pr-readiness` note instead.
+- **People decide, Claude drafts.** Claude never confirms a checkpoint, never answers as the new user or the engineer, and never marks a walkthrough test passed. A walkthrough test with nobody new to the flow is not done: ask for a name from the checker pool or an organiser.
+- **The walkthrough explains, it does not sell.** Every tour step describes something the deliverable really does, using the labels on screen. No tour step for an add-on or for behaviour Harden did not define.
+- **Intro.js is the one external script allowed**, pinned to the version in the template and loaded from cdnjs. If it does not load (offline), the deliverable still works and the "Take the tour" button hides itself. Intro.js is AGPL-3.0 or paid commercial licence: the design lead confirms the licence position before the deliverable goes to a client (open question in `client-setup.md`).
 
 ## Show where the work is
 
@@ -51,7 +57,7 @@ Step: [S1 to S9 from the map below]
 Next: [what happens next, and whether it is a person's turn or Claude's]
 ```
 
-End every reply that reaches the checkpoint (S7) with a clear question, and stop.
+End every reply that reaches a checkpoint (S2, S3, S7) with a clear question to the named person, and stop.
 
 ## Starting Ship
 
@@ -66,8 +72,8 @@ End every reply that reaches the checkpoint (S7) with a clear question, and stop
 | # | Who | Step | Mode | Output | Checker |
 |---|---|---|---|---|---|
 | S1 | Design lead | Share the Harden handoff; Claude reads everything and confirms back in 3 lines | Human-led | Intake check, tracker row | The person sharing |
-| S2 | Claude + Design lead | User stories: 3 to 5, one flow | AI-assisted | `user-story` | Design lead |
-| S3 | Claude + Design engineer | HTML deliverable of the core flow | AI-led | `deliverable` (.html) | Design lead |
+| S2 | Claude, then Design lead + Engineer | User stories: 3 to 5, one flow. **Checkpoint 1:** the design lead and the engineer agree them | AI-assisted, checkpoint | `user-story` | Design lead and engineer confirm |
+| S3 | Claude + Design engineer, then a new user + Design lead | HTML deliverable of the core flow with the Intro.js walkthrough. **Checkpoint 2:** a person new to the flow runs the walkthrough and clicks every state; the design lead confirms | AI-led, checkpoint | `deliverable` (.html), walkthrough test source | New user (their words), design lead confirms |
 | S4 | Claude + Design engineer | Tickets, one per story | AI-led | `ticket` x 3 to 5 | Design lead |
 | S5 | Claude + Design lead | Handoff note and PR readiness note | AI-led | `handoff-note`, `pr-readiness` | Design engineer |
 | S6 | Claude (agent), then Design engineer | Agent pre-check: cold read by `handoff-reviewer` | AI-led | `review` (agent) | Design lead |
@@ -123,6 +129,7 @@ Read these when you reach the relevant moment. Shared references are in `koru-co
 | `references/tickets.md` | S2, S4 and S8: the template, splitting, acceptance criteria rules, export and delivery, labels |
 | `references/handoff.md` | S5 to S9: the handoff note, PR readiness, the cold read brief, the engineer review, the handoff card, send-back to Harden |
 | `references/client-setup.md` | Once per new client: the one-time setup checklist |
+| `references/walkthrough.md` | S3: building the Intro.js walkthrough, and checkpoint 2 (the walkthrough test) |
 | `references/core-additions.md` | Once, when Ship first runs in an engagement whose core has no Ship rows |
 | `stage.json` | Read by core's `init_stage.py` |
 | `assets/templates/` | Starting point for every Ship artefact type |

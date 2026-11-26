@@ -41,6 +41,11 @@ Status per item: `done` (with the source), `not needed` (with a reason), or the 
 - [ ] Whether the label `koru-final` is allowed (and created) in that tool.
 - [ ] Where the HTML deliverable may be hosted or attached so its anchors work for engineers.
 
+## The walkthrough (Intro.js)
+
+- [ ] The licence position for Intro.js is confirmed before a deliverable with the walkthrough goes to the client. Intro.js is AGPL-3.0 or a paid commercial licence; a client deliverable is usually commercial use. Owner: design lead. If it is not confirmed, ship the deliverable with the tour removed (the deliverable works without it) and log the decision.
+- [ ] The client's network allows cdnjs.cloudflare.com, or the tour is accepted as online-only.
+
 ## Tests and CI
 
 - [ ] The test runner and where end-to-end and accessibility tests run (for journey tests in CI).

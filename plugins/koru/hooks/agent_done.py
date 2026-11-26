@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Hooks around the koru reviewer agents (evidence-auditor, feasibility-engineer, hardening-critic, handoff-reviewer).
 
-PreToolUse (Agent): refuses to launch a koru reviewer in the background. A background agent reports back later as
+PreToolUse (Agent): refuses to launch a koru reviewer with run_in_background set. A background agent reports back later as
   a separate message, the user ends up talking to the agent instead of the main session, and the step stalls.
   In the foreground the report comes back as the tool result, in the same turn, and the step carries on.
-PostToolUse (Agent): when a koru reviewer returns, puts the engagement's position and the next moves in context,
+PostToolUse (Agent): if the app ran it in the background anyway, says it has not reported yet and to record
+  progress and wait for its report. When a koru reviewer returns its report, puts the engagement's position and the next moves in context,
   so the main session folds the findings in and records progress (step.py --note) instead of stopping.
 
 Prints nothing and allows everything for other agents and outside a koru engagement.
@@ -40,6 +41,17 @@ def main():
                 f"--status drafted --note \"{agent} running\"."}}))
         return
     if event != "PostToolUse":
+        return
+    resp = data.get("tool_response")
+    resp_text = json.dumps(resp) if not isinstance(resp, str) else resp
+    if any(s in resp_text for s in ("Async agent launched", "launched successfully", "working in the background")) \
+            or (isinstance(resp, dict) and str(resp.get("status", "")).lower() in ("async_launched", "running", "launched")):
+        print(json.dumps({"hookSpecificOutput": {"hookEventName": "PostToolUse", "additionalContext":
+            f"koru: the {agent} is running in the background (this app may run subagents in the background by default). "
+            "It has NOT reported yet. Record progress now (step.py --step <id> --status drafted --note "
+            f"\"{agent} running\"), tell the user in one line that the step continues when it reports, and stop. "
+            "When its report arrives, carry on with the same step in that turn: spot-check, fold in, lint, then "
+            "step.py --status \"in check\" --waiting-on <checker> --note ... Never tell the user to talk to the agent."}}))
         return
     found = k.find_engagements(Path(data.get("cwd") or ".").resolve())
     status = ""
