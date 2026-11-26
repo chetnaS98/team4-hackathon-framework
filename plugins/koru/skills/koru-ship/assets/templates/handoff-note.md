@@ -5,6 +5,7 @@ type: handoff-note
 stage: ship
 status: draft
 version: 1
+iteration: 1
 last_checked: {{date}}
 owner: TODO
 derives_from: []
@@ -25,6 +26,8 @@ Half a page. Links, not copies.
 
 ## Who to ask
 - <topic>: <name>, <role>
+
+<!-- Iteration 2 and later: add "## What changed since iteration <n-1>" here: the build team's feedback, what changed, and the new version of each artefact. lint_ship.py requires it. -->
 
 ## Harden Ship notes
 - <Ship note SN<n>: closed in ticket <nn>, or carried because ...; or "All closed in tickets">

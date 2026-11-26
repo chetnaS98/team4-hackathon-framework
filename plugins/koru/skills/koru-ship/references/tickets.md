@@ -66,7 +66,7 @@ Tickets do not carry image files made up by the AI. The Screenshots field lists 
 The team has no Jira access and the GitHub CLI may not be logged in, so delivery is a file anyone can carry.
 
 ```bash
-python scripts/export_tickets.py --engagement <project>                  # finals only, into 07-ship/export/
+python scripts/export_tickets.py --engagement <project>                  # finals only, into 07-ship/export/iteration-<n>/
 python scripts/export_tickets.py --engagement <project> --status draft   # preview of drafts, into stages/ship/export-preview/
 python scripts/export_tickets.py --engagement <project> --link-base https://host/path/deliverable.html
 python scripts/export_tickets.py --engagement <project> --github owner/repo          # dry run

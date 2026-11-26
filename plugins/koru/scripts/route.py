@@ -12,7 +12,9 @@ is installed, and prints one ACTION:
   CHOOSE     several engagements found: ask which one
   START      no stage active: start the next stage with init_stage
   BLOCKED    something must be fixed by a person first (roles, missing phase skill, core version)
-  DISPATCH   invoke the phase skill for the next step
+  DISPATCH   invoke the phase skill for the next step (a step not started, or drafted and not yet handed over)
+  CHECK      the next step is "in check": ask its named checker for a verdict. Do not re-run the step.
+  OPTIONAL   the next step is optional (stage.json "optional_steps"): ask the team lead to run or skip it
   HANDOFF    every step of the active stage is passed or skipped: run advance_stage.py
   DONE       every stage is handed off
 
@@ -70,6 +72,17 @@ def decide(eng, core):
     in_progress = next((t for t in open_steps if t["status"] in ("drafted", "in check")), None)
     nxt = in_progress or (open_steps[0] if open_steps else None)
     out["next_step"] = nxt
+    optional = k.optional_steps(d)
+    if k.stage_meta(d).get("versioned_handoff"):
+        out["iteration"] = k.iteration(eng, cur["title"])
+    progress = k.load_progress(eng).get(cur["title"].lower(), {})
+    if nxt:
+        key = k.step_key(nxt["step"])
+        out["progress"] = progress.get(key)
+        if key in optional:
+            out["optional"] = optional[key]
+    out["optional_waiting"] = [t["step"] for t in open_steps
+                               if t["status"] == "not started" and k.step_key(t["step"]) in optional]
 
     if not d:
         out["action"] = "BLOCKED"
@@ -82,6 +95,10 @@ def decide(eng, core):
         out["reasons"].append(f"no '{cur['title']} step tracker' table in the read-me")
     elif nxt is None:
         out["action"] = "HANDOFF"
+    elif nxt["status"] == "in check":
+        out["action"] = "CHECK"
+    elif nxt["status"] == "not started" and out.get("optional"):
+        out["action"] = "OPTIONAL"
     else:
         out["action"] = "DISPATCH"
     if sc != 0:
@@ -105,12 +122,24 @@ def render(o):
         lines.append("Stale-check: " + ("clean" if o["stale_check"]["clean"] else "WARNINGS"))
         if not o["stale_check"]["clean"]:
             lines += ["  " + l for l in o["stale_check"]["output"].splitlines()[1:12]]
+    if o.get("iteration"):
+        lines.append(f"Iteration: {o['iteration']} (artefacts and handoff card are v{o['iteration']} or later; iteration.py starts the next round after a handoff)")
     if o.get("tracker"):
         done = sum(1 for t in o["tracker"] if t["status"] in k.DONE)
         lines.append(f"Steps: {done}/{len(o['tracker'])} passed or skipped")
     if o.get("next_step"):
         n = o["next_step"]
-        lines.append(f"Next step: {n['step']} ({n['status']})")
+        lines.append(f"Next step: {n['step']} ({n['status']}{', optional' if o.get('optional') else ''})")
+        pr = o.get("progress") or {}
+        if pr.get("note"):
+            lines.append(f"Progress: {pr['note']} (updated {pr.get('updated', '?')})")
+        waiting = pr.get("waiting_on") or (n["checker"][8:].strip() if n.get("checker", "").startswith("waiting:") else "")
+        if n["status"] == "in check":
+            lines.append(f"Waiting on: {waiting or 'a checker (not named yet: ask who checks it)'}")
+        if o.get("optional"):
+            lines.append(f"Optional: skip reason \"{o['optional']['skip_reason']}\"; run it when: {o['optional'].get('run_when', '-')}")
+    if o.get("optional_waiting"):
+        lines.append("Optional steps not started: " + ", ".join(o["optional_waiting"]) + " (ask the team lead which apply; skip the rest with step.py --skip-optional --by <name> [--keep <ids>])")
     for r in o.get("reasons", []):
         lines.append(f"Note: {r}")
     if o.get("candidates"):

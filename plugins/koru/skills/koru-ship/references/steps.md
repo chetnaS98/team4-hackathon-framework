@@ -73,7 +73,8 @@ Read the entry for the current step before running it. Each entry gives: who, mo
 - **Who:** the design lead runs it with Claude; the design engineer checks.
 - **AI does:** write the handoff note (`assets/templates/handoff-note.md`, half a page): what's in the deliverable, what's not, the decisions engineers should know about (linked to decisions-log lines), who to ask (names and roles from the read-me). List each Harden Ship note not closed in a ticket under "Harden Ship notes", with why. Then write the `pr-readiness` note (`assets/templates/pr-readiness.md`): what a pull request would take, using the team's approach (spec per unit, plan per ticket in plan mode, a questions file with `[Answer]:` slots, component build, journey tests in CI, a review action that never approves) and what is still missing from the client setup list.
 - **Run:** `lint_ship.py <handoff folder> <tickets folder> --ship-notes <harden ship-notes>`.
-- **Output:** `<project>-ship-handoff-note-v1-draft.md`, `<project>-ship-pr-readiness-v1-draft.md` in `drafts/handoff/`. **Checker:** design engineer. **Exit:** lints clean; every Ship note closed or carried; the note fits on half a page.
+- In iteration 2 or later, set `iteration: <n>` in the note's front matter and add `## What changed since iteration <n-1>`: the build team's feedback (cite its source), what changed, and the new version of each artefact.
+- **Output:** `<project>-ship-handoff-note-v<n>-draft.md`, `<project>-ship-pr-readiness-v<n>-draft.md` in `drafts/handoff/` (the next version number; in iteration 1 that is v1). **Checker:** design engineer. **Exit:** lints clean; every Ship note closed or carried; the note fits on half a page.
 
 ## S6. Agent pre-check (AI-led)
 
@@ -94,14 +95,14 @@ Read the entry for the current step before running it. Each entry gives: who, mo
 ## S8. Deliver tickets (AI-led, then a person)
 
 - **Who:** Claude runs the export; the engineer (or whoever has Jira) imports; the design engineer checks the count.
-- **AI does:** run `scripts/export_tickets.py --engagement <project>` (finals only). It writes `07-ship/export/tickets.csv` (Jira's CSV import format) and `tickets.md` (one combined file to paste). If the deliverable will be hosted, pass `--link-base <url>` so ticket links work outside the folder. Follow `references/tickets.md` ("Delivering tickets").
+- **AI does:** run `scripts/export_tickets.py --engagement <project>` (finals only). It writes `07-ship/export/iteration-<n>/tickets.csv` (Jira's CSV import format) and `tickets.md` (one combined file to paste). If the deliverable will be hosted, pass `--link-base <url>` so ticket links work outside the folder. Follow `references/tickets.md` ("Delivering tickets").
 - **GitHub (optional):** `--github owner/repo` prints what it would create. Show the user that list and ask in chat whether to create those issues. Only after a clear yes, run again with `--yes`. If `gh auth status` fails, tell the user to run `gh auth login` themselves, and deliver the CSV meanwhile.
 - After delivery, add a registry row per delivered ticket (`jira:<KEY>` or `github:<owner>/<repo>#<n>` pointer, status `final`), once the person gives you the keys. Never invent a key.
-- **Output:** `07-ship/export/`. **Checker:** the engineer confirms the tickets arrived with the `koru-final` label (or that the CSV is in their hands). **Exit:** delivery confirmed and logged.
+- **Output:** `07-ship/export/iteration-<n>/` (earlier iterations stay as they were). **Checker:** the engineer confirms the tickets arrived with the `koru-final` label (or that the CSV is in their hands). **Exit:** delivery confirmed and logged.
 
 ## S9. Close (AI-led, then the signers)
 
-- **AI does:** fill the Ship handoff card (`references/handoff.md`) at `handoff-cards/<project>-ship-handoff-card.md`; run `koru-core/scripts/build_registry.py` and `stale_check.py`; confirm `07-ship/` holds only `final` artefacts and the generated export; list exactly which files go to Claude project knowledge. Self-test the "must be able to do" line on one ticket.
+- **AI does:** fill the Ship handoff card (`references/handoff.md`) for this iteration at `handoff-cards/<project>-ship-handoff-card-v<iteration>.md` (route.py prints the iteration; never edit an earlier iteration's card); run `koru-core/scripts/build_registry.py` and `stale_check.py`; confirm `07-ship/` holds only `final` artefacts and the generated export; list exactly which files go to Claude project knowledge. Self-test the "must be able to do" line on one ticket.
 - **Signers:** the engineer and the design lead. **Checked by:** the build team's engineer (named). Then tell the orchestrator Ship is ready to hand off: it runs `advance_stage.py --engagement <project> --confirmed-by "<name>"`. Ship is the last stage, so this closes the engagement.
 - **Exit:** every step passed or skipped, card signed, stale-check clean, a named person confirmed.
 

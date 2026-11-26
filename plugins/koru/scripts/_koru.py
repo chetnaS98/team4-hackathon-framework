@@ -139,3 +139,44 @@ def step_tracker(readme_text, title):
 
 def stage_key(title):
     return title.strip().lower()
+
+
+def stage_meta(skill_dir):
+    """The phase skill's stage.json (empty dict if missing)."""
+    return load_json(Path(skill_dir) / "stage.json", {}) if skill_dir else {}
+
+
+def optional_steps(skill_dir):
+    """{step id (lowercase): {"skip_reason": ..., "run_when": ...}} from stage.json "optional_steps"."""
+    return {str(s).strip().lower(): v for s, v in stage_meta(skill_dir).get("optional_steps", {}).items()}
+
+
+def step_key(step_cell):
+    """The step id at the start of a tracker cell: '14a', 'A1–A3', 'H5'."""
+    return step_cell.strip().split(" ")[0].lower()
+
+
+def progress_path(eng):
+    return Path(eng) / ".koru" / "progress.json"
+
+
+def load_progress(eng):
+    return load_json(progress_path(eng), {})
+
+
+def save_progress(eng, data):
+    progress_path(eng).write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
+def iteration(eng, stage_key_):
+    """The stage's current iteration (1 until iteration.py starts another). Kept in .koru/progress.json."""
+    return int(load_progress(eng).get("_iterations", {}).get(stage_key_.lower(), 1))
+
+
+def handoff_card_path(eng, project, stage_key_, skill_dir=None):
+    """handoff-cards/<project>-<stage>-handoff-card.md, or -handoff-card-v<iteration>.md for a stage whose
+    stage.json sets "versioned_handoff": true (Ship: one card per iteration, never overwritten)."""
+    base = Path(eng) / "handoff-cards"
+    if stage_meta(skill_dir).get("versioned_handoff"):
+        return base / f"{project}-{stage_key_}-handoff-card-v{iteration(eng, stage_key_)}.md"
+    return base / f"{project}-{stage_key_}-handoff-card.md"

@@ -14,4 +14,4 @@ Walk the flow as each role, in each awkward situation:
 
 For each break: `Screen | Situation | What goes wrong | Severity (blocker/should/nice) | Smallest fix | Fix here / Ship note / back to Explore`, each row citing the draft line it comes from.
 
-Write `stages/harden/drafts/part-2-harden/<project>-harden-critic-v<n>-draft.md` with koru-core front matter (type edge-cases, stage harden, status draft, `derives_from` what you read). Don't propose redesigns: propose the smallest fix. The designer and design lead decide at H10.
+Write `stages/harden/drafts/part-2-harden/<project>-harden-critic-v<n>-draft.md` with koru-core front matter (type edge-cases, stage harden, status draft, `reviews` the drafts you audited, pinned to the version you read, `derives_from` the inputs you read, not the drafts you audited). Don't propose redesigns: propose the smallest fix. The designer and design lead decide at H10.

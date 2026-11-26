@@ -72,10 +72,25 @@ End every reply that reaches the checkpoint (S7) with a clear question, and stop
 | S5 | Claude + Design lead | Handoff note and PR readiness note | AI-led | `handoff-note`, `pr-readiness` | Design engineer |
 | S6 | Claude (agent), then Design engineer | Agent pre-check: cold read by `handoff-reviewer` | AI-led | `review` (agent) | Design lead |
 | S7 | Engineer | **Checkpoint:** engineer review; answers become new versions; sign-off | Human-led | Source, `review` (engineer) | Engineer signs |
-| S8 | Claude, then Engineer | Deliver tickets: CSV and markdown export, GitHub optional | AI-led | `07-ship/export/` | Engineer |
+| S8 | Claude, then Engineer | Deliver tickets: CSV and markdown export, GitHub optional | AI-led | `07-ship/export/iteration-<n>/` | Engineer |
 | S9 | Claude, then signers | Close: handoff card to the build team; engagement done | AI-led | Handoff card | Build team's engineer |
 
 The playbook for each step is in `references/steps.md`; read the entry for the current step before doing it. After writing an artefact, run `koru-core/scripts/lint_core.py`, `koru-core/scripts/lint_lines.py`, then `scripts/lint_ship.py` (with `--tokens`, `--screens` and `--ship-notes` once those inputs exist), and fix what they report before handing it on.
+
+## Iterations: handoff v1, v2, ...
+
+Ship runs in **iterations**. Iteration 1 ends with the first handoff to the build team: `handoff-cards/<project>-ship-handoff-card-v1.md`, the handoff note with `iteration: 1`, and the export in `07-ship/export/iteration-1/`. When the build team comes back with feedback (questions, changes, a Harden send-back that has been answered), a named person starts the next round:
+
+```bash
+python3 -I "${CLAUDE_PLUGIN_ROOT}/scripts/iteration.py" --engagement <e> --by "<name>" --reason "<the feedback>" [--from S2]
+```
+
+It refuses until the current iteration's card exists, reopens Ship, sets S3 to S9 (or from `--from`) back to not started, and logs it. In iteration n+1:
+- every changed artefact is a **new version** (deliverable, tickets, handoff note, PR readiness, reviews); nothing from iteration n is overwritten, and the previous drafts go to `superseded/`;
+- the handoff note carries `iteration: n+1` in its front matter and a `## What changed since iteration n` section (`lint_ship.py` checks it);
+- the handoff card is a new file, `-v<n+1>`, listing the exact versions handed over; the export goes to `07-ship/export/iteration-<n+1>/`.
+
+Rework *inside* an iteration (S6 agent findings, S7 engineer answers) is still new versions of the drafts, but no new iteration and no new card. `route.py` shows the current iteration.
 
 ## Inputs
 
@@ -91,8 +106,8 @@ All `final`, read at S1: the `hardened-design` artefact and everything it links 
 | `handoff-note` | S5 | `<project>-ship-handoff-note-v1-draft.md` | `07-ship/` |
 | `pr-readiness` | S5 | `<project>-ship-pr-readiness-v1-draft.md` | `07-ship/` |
 | `review` | S6, S7 | `<project>-ship-review-agent-v1-draft.md`, `<project>-ship-review-engineer-v1-draft.md` | `07-ship/` |
-| Ticket export | S8 | `tickets.csv`, `tickets.md` (generated, no front matter) | `07-ship/export/` |
-| Handoff card | S9 | `<project>-ship-handoff-card.md` | `handoff-cards/` |
+| Ticket export | S8 | `tickets.csv`, `tickets.md` (generated, no front matter) | `07-ship/export/iteration-<n>/` |
+| Handoff card | S9 | `<project>-ship-handoff-card-v<iteration>.md` (one per iteration) | `handoff-cards/` |
 
 ## Outside skills
 

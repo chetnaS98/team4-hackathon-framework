@@ -8,7 +8,8 @@ Checks, for the active stage (all from koru-core's rules; nothing new is invente
   1. every step in the stage's step tracker is passed or skipped
   2. the roles gate passes (koru-core check_roles.py)
   3. the stale-check is clean (koru-core stale_check.py)
-  4. the handoff card exists (handoff-cards/<project>-<stage>-handoff-card.md) and every row except
+  4. the handoff card exists (handoff-cards/<project>-<stage>-handoff-card.md, or -handoff-card-v<iteration>.md
+     for a stage with versioned handoffs such as Ship) and every row except
      "Checked by the next stage" is filled
   5. the stage's final folders hold at least one artefact, and every artefact there is status final
   6. the decisions log has at least one sign-off line for the stage
@@ -129,7 +130,7 @@ def main():
     sc, out = k.run_core(core, "stale_check.py", "--engagement", eng)
     if sc != 0:
         problems.append("stale-check has warnings:\n      " + "\n      ".join(out.splitlines()[1:10]))
-    card = eng / "handoff-cards" / f"{proj.get('project')}-{key}-handoff-card.md"
+    card = k.handoff_card_path(eng, proj.get('project'), key, k.find_skill(cur["skill"]) if cur["skill"] else None)
     problems += card_problems(card)
     problems += final_problems(eng, cfg.get("final_folders", []))
     log = eng / "05-decisions-log.md"

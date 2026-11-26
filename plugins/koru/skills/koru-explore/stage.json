@@ -4,15 +4,46 @@
   "number": 2,
   "skill": "koru-explore",
   "core_version": 1,
-  "types": ["direction", "journey", "wireframe", "rationale", "add-ons", "insight-decisions", "design"],
-  "required_roles": ["Designer", "Design lead", "Team lead", "Second-person checker pool"],
-  "draft_folders": ["part-1-directions", "part-2-journeys", "part-3-idea-a", "part-3-idea-b", "part-4-design-v1"],
-  "final_folders": ["06-explore"],
+  "types": [
+    "direction",
+    "journey",
+    "wireframe",
+    "rationale",
+    "add-ons",
+    "insight-decisions",
+    "design"
+  ],
+  "required_roles": [
+    "Designer",
+    "Design lead",
+    "Team lead",
+    "Second-person checker pool"
+  ],
+  "draft_folders": [
+    "part-1-directions",
+    "part-2-journeys",
+    "part-3-idea-a",
+    "part-3-idea-b",
+    "part-4-design-v1"
+  ],
+  "final_folders": [
+    "06-explore"
+  ],
   "source_folder": true,
   "templates_dir": "assets/templates",
   "step_tracker": "assets/stage/step-tracker.md",
   "handoff": {
     "must_be_able_to_do": "Harden the design without going back to the designer for the reasons behind it: every design decision traces to an insight or a named assumption, and every component used is in the design system or listed as a gap",
     "does_not_include": "Production-ready design, a finished visual theme (without a design system, theme exploration comes after Design v1), engineering specifications, and any testing not yet done"
+  },
+  "optional_steps": {
+    "A6": {
+      "skip_reason": "No inputs missing after A5",
+      "run_when": "The directions show gaps in the inputs"
+    },
+    "A15": {
+      "skip_reason": "No changes asked for at checkpoint 3",
+      "run_when": "The designer asks for changes to either idea"
+    }
   }
 }

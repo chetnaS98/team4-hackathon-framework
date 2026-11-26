@@ -27,6 +27,7 @@ Exit 0 on success, 1 when nothing was exported or a GitHub step failed.
 """
 import argparse
 import csv
+import json
 import os
 import re
 import shutil
@@ -158,7 +159,12 @@ def main():
         print(f"No {a.status} tickets found. Nothing exported."
               + (" Tickets become final at S7, after the engineer's sign-off; use --status draft for a preview." if a.status == "final" else ""))
         sys.exit(1)
-    out = Path(a.out) if a.out else (eng / "07-ship" / "export" if a.status == "final" else eng / "stages" / "ship" / "export-preview")
+    try:
+        it = int(json.loads((eng / ".koru" / "progress.json").read_text()).get("_iterations", {}).get("ship", 1))
+    except (OSError, ValueError):
+        it = 1
+    out = Path(a.out) if a.out else (eng / "07-ship" / "export" / f"iteration-{it}" if a.status == "final"
+                                     else eng / "stages" / "ship" / "export-preview" / f"iteration-{it}")
     out.mkdir(parents=True, exist_ok=True)
 
     rows, md_parts, gh_items = [], [], []
